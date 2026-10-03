@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Reval",
+    "email": "reval@example.com",
+    "github": "https://github.com/reval",
+    "instagram": "https://instagram.com/reval",
+    "linkedin": "https://linkedin.com/in/reval",
+    "foto": "https://i.ibb.co.com/DH4YPL6C/C3-ED957-F-C579-4-D1-D-96-B1-7-FC56263610-B.png",
+    "kelas": "IT-49-01"
+  },
+  {
+    "id": 2,
+    "name": "Ijul",
+    "email": "ijul@example.com",
+    "github": "https://github.com/ijul",
+    "instagram": "https://instagram.com/ijul",
+    "linkedin": "https://linkedin.com/in/ijul",
+    "foto": "https://i.ibb.co.com/p60KMnsh/Image-07-06-26-at-13-08.png",
+    "kelas": "IT-49-01"
+  },
+  {
+    "id": 3,
+    "name": "Panjul",
+    "email": "panjul@example.com",
+    "github": "https://github.com/panjul",
+    "instagram": "https://instagram.com/panjul",
+    "linkedin": "https://linkedin.com/in/panjul",
+    "foto": "https://i.ibb.co.com/HDK88thL/IMG-5709.png",
+    "kelas": "IT-49-01"
+  },
+  {
+    "id": 4,
+    "name": "Pasha",
+    "email": "pasha@example.com",
+    "github": "https://github.com/pasha",
+    "instagram": "https://instagram.com/pasha",
+    "linkedin": "https://linkedin.com/in/pasha",
+    "foto": "https://i.ibb.co.com/S7V48fHc/IMG-5984.png",
+    "kelas": "IT-49-01"
+  },
+  {
+    "id": 5,
+    "name": "Domdom",
+    "email": "domdom@example.com",
+    "github": "https://github.com/domdom",
+    "instagram": "https://instagram.com/domdom",
+    "linkedin": "https://linkedin.com/in/domdom",
+    "foto": "https://i.ibb.co.com/Y7DH5qBs/IMG-6200.png",
+    "kelas": "IT-49-01"
+  },
+  {
+    "id": 6,
+    "name": "Dimas",
+    "email": "dimas@example.com",
+    "github": "https://github.com/dimas",
+    "instagram": "https://instagram.com/dimas",
+    "linkedin": "https://linkedin.com/in/dimas",
+    "foto": "https://i.ibb.co.com/xq9SDFwj/IMG-6261.png",
+    "kelas": "IT-49-01"
+  },
+  {
+    "id": 7,
+    "name": "Zafran",
+    "email": "zafraadndahsuganan@example.com",
+    "github": "https://github.com/zafran",
+    "instagram": "https://instagram.com/zafran",
+    "linkedin": "https://linkedin.com/in/zafran",
+    "foto": "https://i.ibb.co.com/bMqVbbY0/IMG-7192.png",
+    "kelas": "IT-49-01"
+  }
+]

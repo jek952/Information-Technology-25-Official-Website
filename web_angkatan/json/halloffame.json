@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "nama": "Andi Pratama",
+    "penghargaan": "Best Team Leader",
+    "deskripsi": "Penghargaan diberikan atas kepemimpinan dan kontribusi dalam mengkoordinasikan tim selama kegiatan angkatan.",
+    "foto": "https://i.ibb.co.com/YFWhRmv7/Prestasi-FH1ok-929x1024.jpg"
+  },
+  {
+    "id": 2,
+    "nama": "Siti Aulia",
+    "penghargaan": "Most Creative Person",
+    "deskripsi": "Penghargaan diberikan atas kreativitas dan ide-ide inovatif yang memberikan kontribusi positif bagi angkatan.",
+    "foto": "https://i.ibb.co.com/Hf8x3SrK/Tim-IYS1-11zon-1024x597.jpg"
+  },
+  {
+    "id": 3,
+    "nama": "Budi Santoso",
+    "penghargaan": "Best Achievement",
+    "deskripsi": "Penghargaan diberikan atas pencapaian dan prestasi yang membanggakan serta membawa nama baik angkatan.",
+    "foto": "https://i.ibb.co.com/Tj1JGQq/images-1.jpg"
+  },
+  {
+    "id": 4,
+    "nama": "Jason momoa",
+    "penghargaan": "Most Inspiring Person",
+    "deskripsi": "Penghargaan diberikan atas semangat, dedikasi, dan sikap positif yang menjadi inspirasi bagi teman-teman di angkatan.",
+    "foto": "https://i.ibb.co.com/LdDr3zQN/images.jpg"
+  }
+]
