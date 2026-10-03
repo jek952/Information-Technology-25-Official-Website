@@ -110,7 +110,7 @@ export default function Struktur() {
 
         <section className="relative flex flex-col px-3 md:px-0 py-8 sm:py-10 items-center justify-center w-11/12 max-w-6xl sm:w-10/12 mx-auto">
           <h1 className="mb-5 text-3xl md:text-4xl font-bold">KELAS IT-49</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-4 h-[1080px] md:h-125 w-full md:w-11/12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-4 h-[1180px] md:h-125 w-full md:w-11/12">
             <Kelas
               kelas="IT 49-01"
               foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
