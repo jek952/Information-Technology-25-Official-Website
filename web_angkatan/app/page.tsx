@@ -2,7 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
-import { KTTabs } from "@keenthemes/ktui";
 import megabit from "@/json/megabit.json";
 import ultras from "@/json/ultras.json";
 import proximiti from "@/json/proximiti.json";
@@ -21,14 +20,18 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Counter from "@/components/counter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   const [isLogo, setIslogo] = useState(true);
   useEffect(() => {
-    KTTabs.init();
+    const initTabs = async () => {
+      const { KTTabs } = await import("@keenthemes/ktui");
+
+      KTTabs.init();
+    };
+
+    initTabs();
   }, []);
   return (
     <>
