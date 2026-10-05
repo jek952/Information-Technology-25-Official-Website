@@ -215,6 +215,76 @@ export default function Home() {
           </button>
         </section>
 
+        {/* === INFORMATION HUB PREVIEW === */}
+        <section className="w-11/12 mx-auto flex justify-center items-center flex-col gap-6 py-16">
+          <span className="text-center">
+            <h1 className="font-semibold text-4xl pb-3 md:text-5xl">Information Hub</h1>
+            <p className="text-gray-500">Event, beasiswa, dan info terbaru untuk warga angkatan</p>
+          </span>
+
+          {/* Grid: 3 kolom desktop, 1 kolom mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            {[
+              {
+                id: "1",
+                title: "Malam Keakraban Angkatan 25",
+                type: "Event Angkatan",
+                organizer: "Panitia Proximiti",
+                image: "/BG-IT.jpeg",
+                excerpt: "Acara malam keakraban untuk seluruh mahasiswa angkatan 25 Teknologi Informasi.",
+              },
+              {
+                id: "3",
+                title: "Hackathon Nasional 2026",
+                type: "Perlombaan",
+                organizer: "Kementerian Kominfo",
+                image: "/BG-Utama.jpeg",
+                excerpt: "Lomba membuat inovasi aplikasi untuk menyelesaikan masalah sosial di Indonesia.",
+              },
+              {
+                id: "5",
+                title: "Seminar AI & Future of Tech",
+                type: "Event Kampus",
+                organizer: "HIMA TI",
+                image: "/BG-IT.jpeg",
+                excerpt: "Seminar menghadirkan pakar AI dari perusahaan teknologi terkemuka.",
+              },
+            ].map((item, idx) => (
+              <a
+                key={item.id}
+                href={`/information/${item.id}`}
+                className={`group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col ${idx > 0 ? "hidden md:flex" : "flex"}`}
+              >
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-5 flex flex-col flex-grow">
+                  <span className="inline-block bg-hijauhunter text-jeruk text-xs font-bold px-3 py-1 rounded-full mb-3 self-start">
+                    {item.type}
+                  </span>
+                  <h3 className="font-bold text-lg text-hijaugelap mb-1 line-clamp-2 group-hover:text-hijauterang transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-2">{item.organizer}</p>
+                  <p className="text-sm text-gray-400 line-clamp-2 flex-grow">{item.excerpt}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <a
+            href="/information"
+            className="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-hijauterang hover:bg-hijauhunter cursor-pointer hover:text-jeruk transition-all ease-in-out"
+          >
+            Info Lainnya
+            <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
+          </a>
+        </section>
+
         <section className="flex flex-col pt-16  px-3 md:px-0 gap-5 min-h-175">
           <span className="text-center">
             <h1 className="font-semibold text-4xl pb-5 md:text-5xl">
