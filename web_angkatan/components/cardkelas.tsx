@@ -37,7 +37,9 @@ export default function Card({
     >
       <img
         src={foto}
-        alt=""
+        alt={nama}
+        loading="lazy"
+        decoding="async"
         className="rounded-full object-cover w-22 h-22 md:w-24 md:h-24"
       />
       <span className="text-center">

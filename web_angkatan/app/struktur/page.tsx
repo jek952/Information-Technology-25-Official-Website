@@ -6,8 +6,30 @@ import Kelas from "@/components/kelas";
 import Pengurus from "@/components/pengurus";
 import { useRouter } from "next/navigation";
 
+import { useEffect, useState } from "react";
+
 export default function Struktur() {
   const router = useRouter();
+  const [ketua, setKetua] = useState({
+    jabatan: "KETUA ANGKATAN",
+    nama: "Fathir An-nafiier",
+    kelas: "IT 49-01",
+    foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791309130/proximiti-2026/struktur/ketua_angkatan.webp",
+    visi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",
+    misi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",
+  });
+
+  useEffect(() => {
+    fetch("/api/struktur")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          setKetua((prev) => ({ ...prev, ...res.data }));
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <>
       <Header />
@@ -21,35 +43,29 @@ export default function Struktur() {
             <div className="absolute -bottom-16 -left-10 h-36 w-36 rounded-full bg-jeruk/20" />
 
             <img
-              src="https://i.ibb.co.com/Gf0WdVMK/IMG-7659.png"
+              src={ketua.foto}
               alt=""
-              className="w-auto md:h-[400px] z-10  border-2 "
+              className="w-auto md:h-[400px] z-10  border-2 object-cover"
             />
 
             <span className="space-y-2">
-              <h1 className="text-3xl font-bold">KETUA ANGKATAN</h1>
-              <h2 className="text-xl font-semibold ">Fathir An-nafiier</h2>
+              <h1 className="text-3xl font-bold">{ketua.jabatan}</h1>
+              <h2 className="text-xl font-semibold ">{ketua.nama}</h2>
 
-              <h3 className="mt-1 text-lg font-medium">IT 49-01</h3>
+              <h3 className="mt-1 text-lg font-medium">{ketua.kelas}</h3>
               <hr className=" mt-2" />
               <div className="mt-6 space-y-2 w-11/12">
                 <div>
                   <h4 className="text-xl font-bold">Visi</h4>
 
                   <p className="mt-2 text-justify">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Eligendi ipsum doloremque repellat architecto ducimus?
-                    Voluptates, quae rem tempora ad quam, nulla eius amet eos id
-                    perferendis ab ea mollitia non!
+                    {ketua.visi}
                   </p>
                 </div>
                 <div>
                   <h4 className="text-xl font-bold">Misi</h4>
                   <p className="mt-2 text-justify">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Eligendi ipsum doloremque repellat architecto ducimus?
-                    Voluptates, quae rem tempora ad quam, nulla eius amet eos id
-                    perferendis ab ea mollitia non!
+                    {ketua.misi}
                   </p>
                 </div>
               </div>
@@ -74,33 +90,33 @@ export default function Struktur() {
             <div className="absolute left-1/2 top-[1764%] h-[21px] w-1 -translate-x-1/2 bg-hijauhunter" />
           </div>
 
-          <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center  gap-5 mt-8">
+          <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center gap-5 mt-8">
             <Pengurus
-              foto="https://i.ibb.co.com/k6q0FpbH/IMG-7990.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308995/proximiti-2026/struktur/reval_satria.webp"
               nama="Reval Satria"
               kelas="IT 49-01"
               jabatan="WAKIL KETUA"
             />
             <Pengurus
-              foto="https://i.ibb.co.com/pjRKsKh5/IMG-5984.png"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308997/proximiti-2026/struktur/ariiq_m.webp"
               nama="Ariiq M"
               kelas="IT 49-01"
               jabatan="SEKRE 1"
             />
             <Pengurus
-              foto="https://i.ibb.co.com/rGF9SmZZ/IMG-7190.png"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
               nama="Zhafran Ujep"
               kelas="IT 49-01"
               jabatan="SEKRE 2"
             />
             <Pengurus
-              foto="https://i.ibb.co.com/rGF9SmZZ/IMG-7190.png"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
               nama="Dimas Dirda"
               kelas="IT 49-01"
               jabatan="BENDAHARA 1"
             />
             <Pengurus
-              foto="https://i.ibb.co.com/rGF9SmZZ/IMG-7190.png"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
               nama="Josjis"
               kelas="IT 49-01"
               jabatan="BENDAHARA 2"
@@ -113,30 +129,30 @@ export default function Struktur() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-4 h-[1180px] md:h-125 w-full md:w-11/12">
             <Kelas
               kelas="IT 49-01"
-              foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
               onclick={() => {
                 router.push(`/kelas/1`);
               }}
             />
             <Kelas
               kelas="IT 49-02"
-              foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
             />
             <Kelas
               kelas="IT 49-03"
-              foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
             />
             <Kelas
               kelas="IT 49-04"
-              foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
             />
             <Kelas
               kelas="IT 49-05"
-              foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
             />
             <Kelas
               kelas="IT 49-06"
-              foto="https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
             />
           </div>
         </section>

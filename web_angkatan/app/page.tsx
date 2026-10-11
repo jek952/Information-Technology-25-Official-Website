@@ -24,14 +24,43 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   const [isLogo, setIslogo] = useState(true);
+  const [proximitiList, setProximitiList] = useState(proximiti);
+  const [megabitList, setMegabitList] = useState(megabit);
+  const [ultrasList, setUltrasList] = useState(ultras);
+  const [hallOfFameList, setHallOfFameList] = useState(halloffames);
+  const [infoList, setInfoList] = useState<any[]>([]);
+
   useEffect(() => {
     const initTabs = async () => {
       const { KTTabs } = await import("@keenthemes/ktui");
-
       KTTabs.init();
     };
-
     initTabs();
+
+    fetch("/api/galeri?kategori=proximiti")
+      .then((r) => r.json())
+      .then((r) => { if (r.success && r.data?.length) setProximitiList(r.data); })
+      .catch(() => {});
+
+    fetch("/api/galeri?kategori=megabit")
+      .then((r) => r.json())
+      .then((r) => { if (r.success && r.data?.length) setMegabitList(r.data); })
+      .catch(() => {});
+
+    fetch("/api/galeri?kategori=ultras")
+      .then((r) => r.json())
+      .then((r) => { if (r.success && r.data?.length) setUltrasList(r.data); })
+      .catch(() => {});
+
+    fetch("/api/hall-of-fame")
+      .then((r) => r.json())
+      .then((r) => { if (r.success && r.data?.length) setHallOfFameList(r.data); })
+      .catch(() => {});
+
+    fetch("/api/information")
+      .then((r) => r.json())
+      .then((r) => { if (r.success && r.data?.length) setInfoList(r.data.slice(0, 3)); })
+      .catch(() => {});
   }, []);
   return (
     <>
@@ -168,13 +197,16 @@ export default function Home() {
               id="tab_1"
               className="flex flex-wrap gap-3 justify-center items-center"
             >
-              {proximiti.map((proximiti) => (
+              {proximitiList.map((item: any) => (
                 <div
                   className="md:max-w-[33.333%] md:max-h-75"
-                  key={proximiti.id}
+                  key={item.id}
                 >
                   <img
-                    src={proximiti.src}
+                    src={item.src}
+                    alt="Galeri Proximiti"
+                    loading="lazy"
+                    decoding="async"
                     className="block w-85 h-[250px] object-cover md:max-w-full md:max-h-75 md:w-auto md:h-auto md:object-contain border-2 border-hijauhunter rounded-xl"
                   />
                 </div>
@@ -182,10 +214,13 @@ export default function Home() {
             </div>
             <div id="tab_2" className="hidden">
               <div className="flex flex-wrap gap-3 justify-center items-center">
-                {megabit.map((mega) => (
-                  <div className="md:max-w-[33.333%] md:max-h-75" key={mega.id}>
+                {megabitList.map((item: any) => (
+                  <div className="md:max-w-[33.333%] md:max-h-75" key={item.id}>
                     <img
-                      src={mega.src}
+                      src={item.src}
+                      alt="Galeri Megabit"
+                      loading="lazy"
+                      decoding="async"
                       className="block w-85 h-[250px] object-cover md:max-w-full md:max-h-75 md:w-auto md:h-auto md:object-contain border-2 border-hijauhunter rounded-xl"
                     />
                   </div>
@@ -195,13 +230,16 @@ export default function Home() {
 
             <div id="tab_3" className="hidden">
               <div className="flex flex-wrap gap-3 justify-center items-center">
-                {ultras.map((ultras) => (
+                {ultrasList.map((item: any) => (
                   <div
                     className="md:max-w-[33.333%] md:max-h-75"
-                    key={ultras.id}
+                    key={item.id}
                   >
                     <img
-                      src={ultras.src}
+                      src={item.src}
+                      alt="Galeri Ultras"
+                      loading="lazy"
+                      decoding="async"
                       className="block w-85 h-[250px] object-cover md:max-w-full md:max-h-75 md:w-auto md:h-auto md:object-contain border-2 border-hijauhunter rounded-xl"
                     />
                   </div>
@@ -224,32 +262,7 @@ export default function Home() {
 
           {/* Grid: 3 kolom desktop, 1 kolom mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-            {[
-              {
-                id: "1",
-                title: "Malam Keakraban Angkatan 25",
-                type: "Event Angkatan",
-                organizer: "Panitia Proximiti",
-                image: "/BG-IT.jpeg",
-                excerpt: "Acara malam keakraban untuk seluruh mahasiswa angkatan 25 Teknologi Informasi.",
-              },
-              {
-                id: "3",
-                title: "Hackathon Nasional 2026",
-                type: "Perlombaan",
-                organizer: "Kementerian Kominfo",
-                image: "/BG-Utama.jpeg",
-                excerpt: "Lomba membuat inovasi aplikasi untuk menyelesaikan masalah sosial di Indonesia.",
-              },
-              {
-                id: "5",
-                title: "Seminar AI & Future of Tech",
-                type: "Event Kampus",
-                organizer: "HIMA TI",
-                image: "/BG-IT.jpeg",
-                excerpt: "Seminar menghadirkan pakar AI dari perusahaan teknologi terkemuka.",
-              },
-            ].map((item, idx) => (
+            {infoList.map((item, idx) => (
               <a
                 key={item.id}
                 href={`/information/${item.id}`}
@@ -259,6 +272,8 @@ export default function Home() {
                   <img
                     src={item.image}
                     alt={item.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
@@ -327,7 +342,7 @@ export default function Home() {
               modules={[EffectCoverflow, Navigation, Pagination, Autoplay]}
               className="w-full"
             >
-              {halloffames.map((isian) => (
+              {hallOfFameList.map((isian: any) => (
                 <SwiperSlide key={isian.id}>
                   <div
                     style={{ backgroundImage: `url(${isian.foto})` }}

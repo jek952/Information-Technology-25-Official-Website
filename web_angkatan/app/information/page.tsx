@@ -47,14 +47,24 @@ const DUMMY_DATA = [
 ];
 
 export default function InformationHub() {
+  const [data, setData] = useState<any[]>(DUMMY_DATA);
   const [filterType, setFilterType] = useState("Semua");
   const [filterAvail, setFilterAvail] = useState("Aktif");
 
-  // Logika Filter (Sesuai poin 2 yang Anda minta)
-  const filteredData = DUMMY_DATA.filter((item) => {
+  React.useEffect(() => {
+    fetch("/api/information")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data?.length) {
+          setData(res.data);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const filteredData = data.filter((item) => {
     const isExpired = new Date() > new Date(item.avail_date);
     
-    // Logika 1: Jika ini Beasiswa/Perlombaan DAN expired, maka SEMBUNYIKAN (Return false)
     if ((item.type === "Beasiswa" || item.type === "Perlombaan") && isExpired) {
       return false;
     }

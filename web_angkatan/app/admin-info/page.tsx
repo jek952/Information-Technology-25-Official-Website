@@ -21,19 +21,68 @@ export default function AdminInfo() {
   const [availDate, setAvailDate] = useState("");
   const [content, setContent] = useState("");
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onload = (ev) => setCoverPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ title, type, organizer, availDate, content });
-    alert("Data berhasil disimpan! (Belum tersambung ke backend)");
+    setIsSubmitting(true);
+    try {
+      let imageUrl = coverPreview || "/BG-IT.jpeg";
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("folder", "information");
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        }).then((r) => r.json());
+
+        if (uploadRes.success) {
+          imageUrl = uploadRes.url;
+        }
+      }
+
+      const res = await fetch("/api/information", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          type,
+          organizer,
+          avail_date: availDate,
+          image: imageUrl,
+          excerpt: content.replace(/<[^>]+>/g, "").slice(0, 150) || title,
+          content,
+        }),
+      }).then((r) => r.json());
+
+      if (res.success) {
+        alert("Postingan berhasil disimpan ke database!");
+        setTitle("");
+        setOrganizer("");
+        setAvailDate("");
+        setContent("");
+        setCoverPreview(null);
+        setSelectedFile(null);
+      } else {
+        alert("Gagal menyimpan: " + (res.error || "Terjadi kesalahan."));
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

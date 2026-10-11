@@ -16,7 +16,9 @@ export default function Pengurus({
     <div className="border w-[80%] sm:w-full hover:bg-hijauhunter transition-all ease-in-out p-3 sm:p-4 text-center hover:text-jeruk">
       <img
         src={foto}
-        alt=""
+        alt={nama}
+        loading="lazy"
+        decoding="async"
         className="w-full h-48 md:h-45  object-cover border-2 hover:border-jeruk"
       />
       <h2 className="mt-4 text-lg font-semibold">{nama}</h2>

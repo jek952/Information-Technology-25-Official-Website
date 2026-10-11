@@ -1,11 +1,49 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Card from "@/components/cardkelas";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import User from "@/json/kelas.json";
+import defaultUsers from "@/json/kelas.json";
 
 const Listkelas = ({ params }: { params: { id: string } }) => {
+  const [students, setStudents] = useState<any[]>(defaultUsers);
+  const [waldos, setWaldos] = useState<any>({
+    nama: "Naran",
+    email: "naran@example.com",
+    github: "https://github.com/naran",
+    instagram: "https://instagram.com/naran",
+    linkedin: "https://linkedin.com/in/naran",
+    foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307750/proximiti-2026/warga/lhqlrgaukm2430s4iujh.jpg",
+    kelas: "Waldos IT-49-01",
+  });
+  const [ketuaKelas, setKetuaKelas] = useState<any>({
+    nama: "Ara",
+    email: "ara@example.com",
+    github: "https://github.com/ara",
+    instagram: "https://instagram.com/ara",
+    linkedin: "https://linkedin.com/in/ara",
+    foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307750/proximiti-2026/warga/lhqlrgaukm2430s4iujh.jpg",
+    kelas: "IT-49-01",
+  });
+
+  useEffect(() => {
+    fetch("/api/warga?kelas=IT-49-01")
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data?.length) {
+          const members = res.data.filter((u: any) => u.role === "anggota" || !u.role);
+          const foundWaldos = res.data.find((u: any) => u.role === "waldos");
+          const foundKetua = res.data.find((u: any) => u.role === "ketua_kelas");
+
+          if (members.length) setStudents(members);
+          if (foundWaldos) setWaldos(foundWaldos);
+          if (foundKetua) setKetuaKelas(foundKetua);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <>
       <Header />
@@ -15,7 +53,7 @@ const Listkelas = ({ params }: { params: { id: string } }) => {
           <div
             style={{
               backgroundImage:
-                "url('https://i.ibb.co.com/W47r8ZS7/IMG-7204.jpg')",
+                "url('https://res.cloudinary.com/hvnrszvj/image/upload/v1791307752/proximiti-2026/galeri/proximiti/f1b4kso4lakrmnkykk5h.jpg')",
             }}
             className="relative flex h-[400px] rounded-2xl w-full items-center justify-center overflow-hidden bg-cover bg-center bg-blend-multiply bg-black/70 text-5xl md:text-7xl font-bold text-white"
           >
@@ -27,26 +65,26 @@ const Listkelas = ({ params }: { params: { id: string } }) => {
                 Dosen Wali Mahasiswa
               </h1>
               <Card
-                nama="Naran"
-                email="naran@example.com"
-                github="https://github.com/naran"
-                insgaram="https://instagram.com/naran"
-                linkedin="https://linkedin.com/in/naran"
-                foto="https://i.ibb.co.com/Gf0WdVMK/IMG-7659.png"
-                kelas="Waldos IT-49-01"
+                nama={waldos.nama}
+                email={waldos.email}
+                github={waldos.github}
+                insgaram={waldos.instagram}
+                linkedin={waldos.linkedin}
+                foto={waldos.foto}
+                kelas={waldos.kelas || "Waldos IT-49-01"}
                 variant="waldos"
               />
             </div>
             <div className="space-y-3">
               <h1 className="text-2xl font-bold text-center">Ketua kelas</h1>
               <Card
-                nama="Ara"
-                email="ara@example.com"
-                github="https://github.com/ara"
-                insgaram="https://instagram.com/ara"
-                linkedin="https://linkedin.com/in/ara"
-                foto="https://i.ibb.co.com/3mHQcZFL/IMG-7990.png"
-                kelas="IT-49-01"
+                nama={ketuaKelas.nama}
+                email={ketuaKelas.email}
+                github={ketuaKelas.github}
+                insgaram={ketuaKelas.instagram}
+                linkedin={ketuaKelas.linkedin}
+                foto={ketuaKelas.foto}
+                kelas={ketuaKelas.kelas || "IT-49-01"}
                 variant="waldos"
               />
             </div>
@@ -54,11 +92,11 @@ const Listkelas = ({ params }: { params: { id: string } }) => {
 
           <h1 className="text-2xl font-bold text-center">Anggota Mahasiswa</h1>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-            {User.map((user) => (
+            {students.map((user) => (
               <Card
                 key={user.id}
                 foto={user.foto}
-                nama={user.name}
+                nama={user.nama || user.name}
                 kelas={user.kelas}
                 email={user.email}
                 github={user.github}
