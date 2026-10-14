@@ -56,18 +56,24 @@ export default function Card({
       <span className="mt-3 md:mt-5 flex gap-2">
         <a
           href={github}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
         >
           <FontAwesomeIcon icon={faGithub} className="text-xl" />
         </a>
         <a
           href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
         >
           <FontAwesomeIcon icon={faLinkedin} className="text-xl" />
         </a>
         <a
           href={insgaram}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
         >
           <FontAwesomeIcon icon={faInstagram} className="text-xl" />

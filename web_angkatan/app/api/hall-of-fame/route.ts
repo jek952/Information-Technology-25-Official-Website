@@ -6,7 +6,9 @@ const HallOfFameSchema = z.object({
   nama: z.string().min(2, "Nama minimal 2 karakter"),
   penghargaan: z.string().min(2, "Nama penghargaan diperlukan"),
   deskripsi: z.string().min(5, "Deskripsi minimal 5 karakter"),
-  foto: z.string().min(1, "URL foto diperlukan"),
+  foto: z.string().refine((v) => v.startsWith("https://") || v.startsWith("http://") || v.startsWith("/"), {
+    message: "URL foto tidak valid",
+  }),
 });
 
 export async function GET() {

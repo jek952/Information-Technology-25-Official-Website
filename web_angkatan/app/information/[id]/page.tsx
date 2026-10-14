@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCalendar, faBuilding } from "@fortawesome/free-solid-svg-icons";
+import DOMPurify from "isomorphic-dompurify";
 
 export default function InformationDetail() {
   const { id } = useParams();
@@ -70,10 +71,9 @@ export default function InformationDetail() {
                 </div>
               </div>
 
-              {/* Rich Text / Blog Content Layout */}
               <div
                 className="prose prose-lg prose-green max-w-none text-gray-700"
-                dangerouslySetInnerHTML={{ __html: displayData.content }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(displayData.content) }}
               />
             </div>
           </article>

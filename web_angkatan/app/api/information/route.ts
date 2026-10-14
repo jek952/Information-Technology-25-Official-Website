@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase-admin";
 import { z } from "zod";
+import DOMPurify from "isomorphic-dompurify";
 
 const InformationSchema = z.object({
   title: z.string().min(3, "Judul minimal 3 karakter"),
   type: z.string().min(2, "Tipe informasi diperlukan"),
   organizer: z.string().min(2, "Penyelenggara diperlukan"),
   avail_date: z.string().min(8, "Tanggal ketersediaan diperlukan"),
-  image: z.string().min(1, "URL foto diperlukan"),
+  image: z.string().refine((val) => val.startsWith("https://") || val.startsWith("http://") || val.startsWith("/"), {
+    message: "URL foto tidak valid",
+  }),
   excerpt: z.string().min(5, "Ringkasan minimal 5 karakter"),
   content: z.string().min(10, "Konten minimal 10 karakter"),
 });
@@ -51,8 +54,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const cleanContent = DOMPurify.sanitize(parsed.data.content);
+
     const docRef = await db.collection("information").add({
       ...parsed.data,
+      content: cleanContent,
       created_at: new Date().toISOString(),
     });
 

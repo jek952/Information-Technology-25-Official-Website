@@ -4,7 +4,9 @@ import { z } from "zod";
 
 const GaleriSchema = z.object({
   kategori: z.enum(["proximiti", "megabit", "ultras"]),
-  src: z.string().min(1, "URL foto diperlukan"),
+  src: z.string().refine((v) => v.startsWith("https://") || v.startsWith("http://") || v.startsWith("/"), {
+    message: "URL foto tidak valid",
+  }),
 });
 
 export async function GET(req: NextRequest) {
