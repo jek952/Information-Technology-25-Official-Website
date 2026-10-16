@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import Card from "@/components/cardkelas";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import defaultUsers from "@/json/kelas.json";
+
 
 const Listkelas = ({ params }: { params: { id: string } }) => {
-  const [students, setStudents] = useState<any[]>(defaultUsers);
+  const [students, setStudents] = useState<any[]>([bukan saya k]);
   const [waldos, setWaldos] = useState<any>({
     nama: "Naran",
     email: "naran@example.com",
@@ -21,7 +23,7 @@ const Listkelas = ({ params }: { params: { id: string } }) => {
     nama: "Ara",
     email: "ara@example.com",
     github: "https://github.com/ara",
-    instagram: "https://instagram.com/ara",
+    instagram: "https://instagram.com/ara", 
     linkedin: "https://linkedin.com/in/ara",
     foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307750/proximiti-2026/warga/lhqlrgaukm2430s4iujh.jpg",
     kelas: "IT-49-01",
@@ -55,7 +57,7 @@ const Listkelas = ({ params }: { params: { id: string } }) => {
               backgroundImage:
                 "url('https://res.cloudinary.com/hvnrszvj/image/upload/v1791307752/proximiti-2026/galeri/proximiti/f1b4kso4lakrmnkykk5h.jpg')",
             }}
-            className="relative flex h-[400px] rounded-2xl w-full items-center justify-center overflow-hidden bg-cover bg-center bg-blend-multiply bg-black/70 text-5xl md:text-7xl font-bold text-white"
+            className="relative flex h-100 rounded-2xl w-full items-center justify-center overflow-hidden bg-cover bg-center bg-blend-multiply bg-black/70 text-5xl md:text-7xl font-bold text-white"
           >
             IT-49-01
           </div>

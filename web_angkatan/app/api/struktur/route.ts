@@ -10,8 +10,8 @@ export async function GET() {
         success: true,
         data: {
           jabatan: "KETUA ANGKATAN",
-          nama: "Fathir An-nafiier",
-          kelas: "IT 49-01",
+          nama: "Muhammad Reivan Maulana",
+          kelas: "IT 49-02",
           foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791309130/proximiti-2026/struktur/ketua_angkatan.webp",
           visi: "Visi angkatan IT 2026...",
           misi: "Misi angkatan IT 2026..."

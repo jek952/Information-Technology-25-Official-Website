@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -21,6 +22,7 @@ import Header from "@/components/header";
 import Counter from "@/components/counter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 export default function Home() {
   const [isLogo, setIslogo] = useState(true);
@@ -67,6 +69,7 @@ export default function Home() {
       <Header />
 
       <main className="md:px-0">
+        
         <section className="relative flex flex-col px-3 md:px-0 py-10 items-center justify-center md:w-1/2 mx-auto">
           <div
             onMouseEnter={() => setIslogo(false)}
@@ -291,13 +294,13 @@ export default function Home() {
             ))}
           </div>
 
-          <a
+          <Link
             href="/information"
             className="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-hijauterang hover:bg-hijauhunter cursor-pointer hover:text-jeruk transition-all ease-in-out"
           >
             Info Lainnya
             <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
-          </a>
+          </Link>
         </section>
 
         <section className="flex flex-col pt-16  px-3 md:px-0 gap-5 min-h-175">

@@ -12,7 +12,7 @@ export default function Struktur() {
   const router = useRouter();
   const [ketua, setKetua] = useState({
     jabatan: "KETUA ANGKATAN",
-    nama: "Fathir An-nafiier",
+    nama: "Muhammad Reivan Maulana",
     kelas: "IT 49-01",
     foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791309130/proximiti-2026/struktur/ketua_angkatan.webp",
     visi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",

@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
       );
       stream.end(compressedBuffer);
     });
+    
 
     return NextResponse.json({
       success: true,

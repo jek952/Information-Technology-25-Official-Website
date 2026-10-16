@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { initializeApp, getApps, cert, getApp } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 
 function getFirebaseAdminApp() {
@@ -26,8 +27,8 @@ function getFirebaseAdminApp() {
   });
 }
 
-let _db: FirebaseFirestore.Firestore | null = null;
-export const db = new Proxy({} as FirebaseFirestore.Firestore, {
+let _db: Firestore | null = null;
+export const db = new Proxy({} as Firestore, {
   get(_, prop) {
     if (!_db) {
       const app = getFirebaseAdminApp();
