@@ -9,7 +9,7 @@ import Header from "@/components/header";
 
 
 const Listkelas = ({ params }: { params: { id: string } }) => {
-  const [students, setStudents] = useState<any[]>([bukan saya k]);
+  const [students, setStudents] = useState<any[]>([]);
   const [waldos, setWaldos] = useState<any>({
     nama: "Naran",
     email: "naran@example.com",

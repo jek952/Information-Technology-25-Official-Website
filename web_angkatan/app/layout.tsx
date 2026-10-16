@@ -5,7 +5,7 @@ import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const poppins = localFont({
   src: [
@@ -48,8 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={cn(poppins.className, "font-sans", geist.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
-       <Toaster position="bottom-right" richColors closeButton />
+      <body className="min-h-full flex flex-col">
+        {children} <Toaster position="bottom-right" richColors closeButton />
+      </body>
     </html>
   );
 }
