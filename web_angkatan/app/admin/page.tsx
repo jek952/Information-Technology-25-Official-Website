@@ -325,7 +325,7 @@ export default function AdminInfo() {
         >
           <FontAwesomeIcon icon={faBars} />
         </button>
-        <div className="fixed inset-y-0 left-0 right-0 md:left-64 flex flex-col items-center justify-center ">
+        <div className="relative inset-y-0 left-0 right-0 md:left-32 flex flex-col items-center justify-center ">
           {active === "Tambah Warga" && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
