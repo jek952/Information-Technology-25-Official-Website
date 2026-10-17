@@ -13,9 +13,9 @@ export default function Struktur() {
   const [ketua, setKetua] = useState({
     jabatan: "KETUA ANGKATAN",
     nama: "Muhammad Reivan Maulana",
-    kelas: "IT 49-01",
+    kelas: "IT-49-02",
     foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791309130/proximiti-2026/struktur/ketua_angkatan.webp",
-    visi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",
+    visi: "Membangun Angkatan 25 Teknologi Informasi yang kompak, komunikatif, dan saling membantu, serta tumbuh bersama selama menjalani perjalanan di Prodi Teknologi Informasi, juga menjadi jembatan komunikasi dan informasi antar angkatan.",
     misi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",
   });
 
@@ -64,8 +64,8 @@ export default function Struktur() {
                 </div>
                 <div>
                   <h4 className="text-xl font-bold">Misi</h4>
-                  <p className="mt-2 text-justify">
-                    {ketua.misi}
+                  <p className="mt-2 text-justify whitespace-pre-line leading-7">
+                     {ketua.misi}
                   </p>
                 </div>
               </div>
@@ -136,23 +136,38 @@ export default function Struktur() {
             />
             <Kelas
               kelas="IT 49-02"
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
+              foto="https://i.ibb.co.com/wZxNFFBx/IMG-3679-JPG.jpg"
+               onclick={() => {
+                router.push(`/kelas/2`);
+              }}
             />
             <Kelas
               kelas="IT 49-03"
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
+              foto="https://i.ibb.co.com/G4cgqGq5/Whats-App-Image-2026-10-17-at-15-05-45.jpg"
+               onclick={() => {
+                router.push(`/kelas/3`);
+              }}
             />
             <Kelas
               kelas="IT 49-04"
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
+              foto="https://i.ibb.co.com/8DLkFT80/SAVE-20251009-134148-jpg.jpg"
+               onclick={() => {
+                router.push(`/kelas/4`);
+              }}
             />
             <Kelas
               kelas="IT 49-05"
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
+               onclick={() => {
+                router.push(`/kelas/5`);
+              }}
             />
             <Kelas
-              kelas="IT 49-06"
+              kelas="IT 49-INT"
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308999/proximiti-2026/kelas/kelas_banner.webp"
+               onclick={() => {
+                router.push(`/kelas/6`);
+              }}
             />
           </div>
         </section>
