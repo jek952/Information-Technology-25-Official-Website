@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase-admin";
 import { z } from "zod";
+import { verifyAdminSession } from "@/app/lib/auth";
 
 function extractSocial(raw: unknown, platform: "instagram" | "github" | "linkedin"): string {
   if (typeof raw !== "string") return "";
@@ -83,7 +84,21 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await verifyAdminSession(req);
+    if (!session.authenticated) {
+      return NextResponse.json(
+        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
+        { status: 401 }
+      );
+    }
+
     const rawBody = await req.json();
+    if (JSON.stringify(rawBody).length > 20000) {
+      return NextResponse.json(
+        { success: false, error: "Ukuran data payload terlalu besar (maksimal 20 KB)." },
+        { status: 413 }
+      );
+    }
     const body = {
       ...rawBody,
       github: extractSocial(rawBody.github, "github"),
@@ -97,6 +112,43 @@ export async function POST(req: NextRequest) {
         { success: false, error: parsed.error.issues[0].message },
         { status: 400 }
       );
+    }
+
+    if (parsed.data.role === "waldos") {
+      const existingWaldos = await db
+        .collection("warga")
+        .where("kelas", "==", parsed.data.kelas)
+        .where("role", "==", "waldos")
+        .get();
+
+      if (!existingWaldos.empty) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Kelas ${parsed.data.kelas} sudah memiliki Dosen Wali. Hanya boleh 1 Dosen Wali per kelas. Gunakan menu edit untuk memperbarui data.`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (parsed.data.role === "ketua_kelas") {
+      const existingKetua = await db
+        .collection("warga")
+        .where("kelas", "==", parsed.data.kelas)
+        .where("role", "==", "ketua_kelas")
+        .get();
+
+      if (!existingKetua.empty) {
+        const batch = db.batch();
+        existingKetua.docs.forEach((doc) => {
+          batch.update(doc.ref, {
+            role: "anggota",
+            updated_at: new Date().toISOString(),
+          });
+        });
+        await batch.commit();
+      }
     }
 
     const docRef = await db.collection("warga").add({
@@ -117,3 +169,163 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await verifyAdminSession(req);
+    if (!session.authenticated) {
+      return NextResponse.json(
+        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
+        { status: 401 }
+      );
+    }
+
+    const rawBody = await req.json();
+    if (JSON.stringify(rawBody).length > 20000) {
+      return NextResponse.json(
+        { success: false, error: "Ukuran data payload terlalu besar (maksimal 20 KB)." },
+        { status: 413 }
+      );
+    }
+    const { id, ...rest } = rawBody;
+    const SAFE_DOC_ID = /^[a-zA-Z0-9_-]{1,128}$/;
+    if (!id || typeof id !== "string" || !SAFE_DOC_ID.test(id)) {
+      return NextResponse.json(
+        { success: false, error: "Format ID warga tidak valid." },
+        { status: 400 }
+      );
+    }
+
+    const body = {
+      ...rest,
+      github: extractSocial(rest.github, "github"),
+      instagram: extractSocial(rest.instagram, "instagram"),
+      linkedin: extractSocial(rest.linkedin, "linkedin"),
+    };
+
+    const parsed = WargaSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { success: false, error: parsed.error.issues[0].message },
+        { status: 400 }
+      );
+    }
+
+    const docRef = db.collection("warga").doc(id);
+    const existing = await docRef.get();
+    if (!existing.exists) {
+      return NextResponse.json(
+        { success: false, error: "Data warga tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    if (parsed.data.role === "ketua_kelas") {
+      const otherKetua = await db
+        .collection("warga")
+        .where("kelas", "==", parsed.data.kelas)
+        .where("role", "==", "ketua_kelas")
+        .get();
+
+      const batch = db.batch();
+      otherKetua.docs.forEach((doc) => {
+        if (doc.id !== id) {
+          batch.update(doc.ref, {
+            role: "anggota",
+            updated_at: new Date().toISOString(),
+          });
+        }
+      });
+      await batch.commit();
+    }
+
+    if (parsed.data.role === "waldos") {
+      const otherWaldos = await db
+        .collection("warga")
+        .where("kelas", "==", parsed.data.kelas)
+        .where("role", "==", "waldos")
+        .get();
+
+      const batch = db.batch();
+      otherWaldos.docs.forEach((doc) => {
+        if (doc.id !== id) {
+          batch.update(doc.ref, {
+            role: "anggota",
+            updated_at: new Date().toISOString(),
+          });
+        }
+      });
+      await batch.commit();
+    }
+
+    await docRef.update({
+      ...parsed.data,
+      updated_at: new Date().toISOString(),
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Data warga berhasil diperbarui.",
+    });
+  } catch (error) {
+    console.error("PUT warga error:", error);
+    return NextResponse.json(
+      { success: false, error: "Gagal memperbarui data warga." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await verifyAdminSession(req);
+    if (!session.authenticated) {
+      return NextResponse.json(
+        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(req.url);
+    let id = searchParams.get("id");
+    if (!id) {
+      try {
+        const body = await req.json();
+        id = body?.id;
+      } catch {
+        // no body
+      }
+    }
+
+    const SAFE_DOC_ID = /^[a-zA-Z0-9_-]{1,128}$/;
+    if (!id || typeof id !== "string" || !SAFE_DOC_ID.test(id)) {
+      return NextResponse.json(
+        { success: false, error: "Format ID warga tidak valid." },
+        { status: 400 }
+      );
+    }
+
+    const docRef = db.collection("warga").doc(id);
+    const existing = await docRef.get();
+    if (!existing.exists) {
+      return NextResponse.json(
+        { success: false, error: "Data warga tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    await docRef.delete();
+
+    return NextResponse.json({
+      success: true,
+      message: "Data warga berhasil dihapus.",
+    });
+  } catch (error) {
+    console.error("DELETE warga error:", error);
+    return NextResponse.json(
+      { success: false, error: "Gagal menghapus data warga." },
+      { status: 500 }
+    );
+  }
+}
+

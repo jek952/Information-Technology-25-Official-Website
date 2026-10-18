@@ -7,6 +7,13 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const SAFE_DOC_ID = /^[a-zA-Z0-9_-]{1,128}$/;
+    if (!id || typeof id !== "string" || !SAFE_DOC_ID.test(id)) {
+      return NextResponse.json(
+        { success: false, error: "Format ID informasi tidak valid." },
+        { status: 400 }
+      );
+    }
     const doc = await db.collection("information").doc(id).get();
 
     if (!doc.exists) {

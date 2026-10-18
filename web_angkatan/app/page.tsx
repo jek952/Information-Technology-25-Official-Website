@@ -21,11 +21,12 @@ import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Counter from "@/components/counter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faExpand } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 
 export default function Home() {
   const [isLogo, setIslogo] = useState(true);
+  const [activeGaleriTab, setActiveGaleriTab] = useState<"proximiti" | "megabit" | "ultras">("proximiti");
   const [proximitiList, setProximitiList] = useState(proximiti);
   const [megabitList, setMegabitList] = useState(megabit);
   const [ultrasList, setUltrasList] = useState(ultras);
@@ -33,11 +34,6 @@ export default function Home() {
   const [infoList, setInfoList] = useState<any[]>([]);
 
   useEffect(() => {
-    const initTabs = async () => {
-      const { KTTabs } = await import("@keenthemes/ktui");
-      KTTabs.init();
-    };
-    initTabs();
 
     fetch("/api/galeri?kategori=proximiti")
       .then((r) => r.json())
@@ -162,98 +158,116 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-11/12  mx-auto flex justify-center items-center flex-col gap-4">
-          <span className="text-center">
-            <h1 className="font-semibold text-4xl pb-5 md:text-5xl">
+        {/* === SECTION GALERI KAMI === */}
+        <section className="w-11/12 max-w-7xl mx-auto py-16 flex flex-col items-center gap-8">
+          <div className="text-center max-w-2xl space-y-3">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-hijaugelap tracking-tight">
               Galeri Kami
-            </h1>
-            <p>Beberapa galeri kami selama kami di telkom univeristy</p>
-          </span>
-          <div
-            className="kt-tabs kt-tabs-line inline-flex items-center gap-1 rounded-lg border border-jeruk bg-hijauhunter p-2"
-            data-kt-tabs="true"
-          >
-            <button
-              className="kt-tab-toggle cursor-pointer  active rounded-md px-4 py-2 text-sm text-white"
-              data-kt-tab-toggle="#tab_1"
-            >
-              Proximiti
-            </button>
-
-            <button
-              className="kt-tab-toggle cursor-pointer  rounded-md px-4 py-2 text-sm text-white"
-              data-kt-tab-toggle="#tab_2"
-            >
-              Megabit
-            </button>
-
-            <button
-              className="kt-tab-toggle cursor-pointer rounded-md px-4 py-2 text-sm text-white"
-              data-kt-tab-toggle="#tab_3"
-            >
-              Ultras
-            </button>
+            </h2>
+            <p className="text-sm sm:text-base text-gray-500">
+              Dokumentasi dan rekam jejak kegiatan mahasiswa S1 Teknologi Informasi Angkatan 2025
+            </p>
           </div>
 
-          <div className="text-sm min-h-[650px]">
-            <div
-              id="tab_1"
-              className="flex flex-wrap gap-3 justify-center items-center"
-            >
-              {proximitiList.map((item: any) => (
-                <div
-                  className="md:max-w-[33.333%] md:max-h-75"
-                  key={item.id}
-                >
-                  <img
-                    src={item.src}
-                    alt="Galeri Proximiti"
-                    loading="lazy"
-                    decoding="async"
-                    className="block w-85 h-[250px] object-cover md:max-w-full md:max-h-75 md:w-auto md:h-auto md:object-contain border-2 border-hijauhunter rounded-xl"
-                  />
-                </div>
-              ))}
-            </div>
-            <div id="tab_2" className="hidden">
-              <div className="flex flex-wrap gap-3 justify-center items-center">
-                {megabitList.map((item: any) => (
-                  <div className="md:max-w-[33.333%] md:max-h-75" key={item.id}>
-                    <img
-                      src={item.src}
-                      alt="Galeri Megabit"
-                      loading="lazy"
-                      decoding="async"
-                      className="block w-85 h-[250px] object-cover md:max-w-full md:max-h-75 md:w-auto md:h-auto md:object-contain border-2 border-hijauhunter rounded-xl"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Filter Tabs */}
+          <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-gray-100 border border-gray-200">
+            {(["proximiti", "megabit", "ultras"] as const).map((tab) => {
+              const isActive = activeGaleriTab === tab;
+              const label =
+                tab === "proximiti"
+                  ? "Proximiti"
+                  : tab === "megabit"
+                  ? "Megabit"
+                  : "Ultras TI";
+              const count =
+                tab === "proximiti"
+                  ? proximitiList.length
+                  : tab === "megabit"
+                  ? megabitList.length
+                  : ultrasList.length;
 
-            <div id="tab_3" className="hidden">
-              <div className="flex flex-wrap gap-3 justify-center items-center">
-                {ultrasList.map((item: any) => (
-                  <div
-                    className="md:max-w-[33.333%] md:max-h-75"
-                    key={item.id}
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveGaleriTab(tab)}
+                  className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+                    isActive
+                      ? "bg-hijauhunter text-white shadow-sm"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-white/60"
+                  }`}
+                >
+                  <span>{label}</span>
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      isActive ? "bg-white/20 text-white" : "bg-gray-200 text-gray-600"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Modern Photo Grid */}
+          <div className="w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-5">
+              {(activeGaleriTab === "proximiti"
+                ? proximitiList
+                : activeGaleriTab === "megabit"
+                ? megabitList
+                : ultrasList
+              )
+                .slice(0, 8)
+                .map((item: any, idx: number) => (
+                  <Link
+                    key={item.id || idx}
+                    href="/galeri"
+                    className="group relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-2xs hover:shadow-lg transition-all duration-300 hover:-translate-y-1 block"
                   >
                     <img
                       src={item.src}
-                      alt="Galeri Ultras"
+                      alt={item.caption || `Foto ${activeGaleriTab}`}
                       loading="lazy"
                       decoding="async"
-                      className="block w-85 h-[250px] object-cover md:max-w-full md:max-h-75 md:w-auto md:h-auto md:object-contain border-2 border-hijauhunter rounded-xl"
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     />
-                  </div>
+
+                    {/* Dark Glass Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5">
+                      <div className="flex justify-end">
+                        <span className="w-7 h-7 rounded-full bg-white/20 text-white flex items-center justify-center text-xs backdrop-blur-xs">
+                          <FontAwesomeIcon icon={faExpand} />
+                        </span>
+                      </div>
+
+                      <div>
+                        {item.caption && (
+                          <p className="text-white text-xs font-semibold line-clamp-2 drop-shadow-sm">
+                            {item.caption}
+                          </p>
+                        )}
+                        <p className="text-emerald-300 text-[10px] font-medium mt-0.5">
+                          Lihat di Galeri &rarr;
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
                 ))}
-              </div>
             </div>
           </div>
-          <button className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-hijauterang hover:bg-hijauhunter cursor-pointer hover:text-jeruk transition-all ease-in-out">
-            Lihat Semuanya
-            <FontAwesomeIcon icon={faArrowRight} className="text-lg" />
-          </button>
+
+          {/* CTA Link to Full Gallery */}
+          <Link
+            href="/galeri"
+            className="py-3 px-6 inline-flex items-center gap-x-2.5 text-sm font-semibold rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white transition-all shadow-sm hover:shadow-md cursor-pointer group"
+          >
+            <span>Lihat Galeri Selengkapnya</span>
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className="text-xs transition-transform group-hover:translate-x-1"
+            />
+          </Link>
         </section>
 
         {/* === INFORMATION HUB PREVIEW === */}

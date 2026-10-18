@@ -6,16 +6,19 @@ import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type Props = {
+  content?: string;
   onChange: (html: string) => void;
 };
 
-export default function RichTextEditor({ onChange }: Props) {
+export default function RichTextEditor({ content = "", onChange }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
+    content,
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
@@ -36,6 +39,13 @@ export default function RichTextEditor({ onChange }: Props) {
       },
     },
   });
+
+  useEffect(() => {
+    if (editor && content && editor.getHTML() !== content) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
+
 
   if (!editor) return null;
 

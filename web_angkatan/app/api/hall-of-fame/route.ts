@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase-admin";
 import { z } from "zod";
+import { verifyAdminSession } from "@/app/lib/auth";
 
 const HallOfFameSchema = z.object({
   nama: z.string().min(2, "Nama minimal 2 karakter"),
@@ -31,7 +32,21 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await verifyAdminSession(req);
+    if (!session.authenticated) {
+      return NextResponse.json(
+        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
+        { status: 401 }
+      );
+    }
+
     const body = await req.json();
+    if (JSON.stringify(body).length > 10000) {
+      return NextResponse.json(
+        { success: false, error: "Ukuran data payload terlalu besar (maksimal 10 KB)." },
+        { status: 413 }
+      );
+    }
     const parsed = HallOfFameSchema.safeParse(body);
 
     if (!parsed.success) {

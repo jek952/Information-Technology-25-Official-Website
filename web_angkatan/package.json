@@ -6,7 +6,8 @@
     "dev": "next dev -p 4300",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "migrate:sheets": "node scripts/migrate-spreadsheet-to-db.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
@@ -41,6 +42,7 @@
     "radix-ui": "^1.8.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-easy-crop": "^6.2.4",
     "shadcn": "^4.21.5",
     "sharp": "^0.35.5",
     "sonner": "^2.0.8",
