@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import megabit from "@/json/megabit.json";
 import ultras from "@/json/ultras.json";
 import proximiti from "@/json/proximiti.json";
@@ -32,6 +32,20 @@ export default function Home() {
   const [ultrasList, setUltrasList] = useState(ultras);
   const [hallOfFameList, setHallOfFameList] = useState(halloffames);
   const [infoList, setInfoList] = useState<any[]>([]);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [hallOfFameActiveIndex, setHallOfFameActiveIndex] = useState(0);
+
+  const loopedHallOfFame = useMemo(() => {
+    if (!hallOfFameList || hallOfFameList.length === 0) return [];
+    if (hallOfFameList.length < 6) {
+      let result: any[] = [];
+      while (result.length < 8) {
+        result = [...result, ...hallOfFameList];
+      }
+      return result;
+    }
+    return hallOfFameList;
+  }, [hallOfFameList]);
 
   useEffect(() => {
 
@@ -326,13 +340,20 @@ export default function Home() {
           </span>
           <div className="w-full max-w-6xl mx-auto">
             <Swiper
+              key={`hof-${loopedHallOfFame.length}`}
+              onSwiper={setSwiperInstance}
+              onSlideChange={(swiper) => {
+                if (hallOfFameList.length > 0) {
+                  setHallOfFameActiveIndex(swiper.realIndex % hallOfFameList.length);
+                }
+              }}
               effect="coverflow"
               grabCursor={true}
               centeredSlides={true}
               slidesPerView={1}
               spaceBetween={20}
               loop={true}
-              speed={700}
+              speed={800}
               breakpoints={{
                 640: {
                   slidesPerView: 1,
@@ -351,21 +372,20 @@ export default function Home() {
                 modifier: 1,
                 slideShadows: false,
               }}
-              pagination={{ clickable: true }}
               autoplay={{
-                delay: 3000,
+                delay: 3200,
                 disableOnInteraction: false,
               }}
-              modules={[EffectCoverflow, Navigation, Pagination, Autoplay]}
+              modules={[EffectCoverflow, Navigation, Autoplay]}
               className="w-full"
             >
-              {hallOfFameList.map((isian: any) => (
-                <SwiperSlide key={isian.id}>
+              {loopedHallOfFame.map((isian: any, idx: number) => (
+                <SwiperSlide key={`${isian.id}-${idx}`}>
                   <div
                     style={{ backgroundImage: `url(${isian.foto})` }}
                     className="relative rounded-xl w-auto md:w-125 bg-blend-multiply bg-black/50 text-white flex flex-col items-start justify-end p-4 h-[300px] bg-center bg-cover"
                   >
-                    <h2 className="text-cl md:text-2xl font-bold">
+                    <h2 className="text-xl md:text-2xl font-bold">
                       {isian.nama}
                     </h2>
                     <h1 className="text-base md:text-lg font-semibold">
@@ -376,6 +396,36 @@ export default function Home() {
                 </SwiperSlide>
               ))}
             </Swiper>
+
+            {/* Indicator dots yang presisi sesuai jumlah asli data */}
+            {hallOfFameList.length > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-6">
+                {hallOfFameList.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      if (!swiperInstance) return;
+                      const currentMod = swiperInstance.realIndex % hallOfFameList.length;
+                      let diff = i - currentMod;
+                      // cari rute rotasi terdekat (maju atau mundur)
+                      if (diff > hallOfFameList.length / 2) {
+                        diff -= hallOfFameList.length;
+                      } else if (diff < -hallOfFameList.length / 2) {
+                        diff += hallOfFameList.length;
+                      }
+                      swiperInstance.slideTo(swiperInstance.activeIndex + diff);
+                    }}
+                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      hallOfFameActiveIndex === i
+                        ? "w-8 bg-hijauterang"
+                        : "w-2.5 bg-gray-300 hover:bg-gray-400"
+                    }`}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
