@@ -19,6 +19,8 @@ export default function Struktur() {
     misi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",
   });
 
+  const [km, Setkm] = useState({})
+
   useEffect(() => {
     fetch("/api/struktur")
       .then((res) => res.json())
@@ -38,14 +40,14 @@ export default function Struktur() {
           <h1 className=" text-3xl md:text-5xl font-bold text-center">
             STRUKTUR ANGKATAN IT 25
           </h1>
-          <div className="relative flex w-full flex-col md:flex-row overflow-hidden border p-4 mt-10 items-center gap-8 hover:bg-hijauhunter hover:text-jeruk transition-all ease-in-out">
+          <div className="relative flex w-full flex-col md:flex-row overflow-hidden border p-4 mt-10 items-center gap-8 rounded-2xl hover:bg-hijauhunter hover:text-jeruk transition-all ease-in-out">
             <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-hijauterangbanget/40" />
             <div className="absolute -bottom-16 -left-10 h-36 w-36 rounded-full bg-jeruk/20" />
 
             <img
               src={ketua.foto}
               alt=""
-              className="w-auto md:h-[400px] z-10  border-2 object-cover"
+              className="w-auto md:h-[400px] z-10 rounded-2xl  border-2 object-cover"
             />
 
             <span className="space-y-2">
@@ -95,31 +97,31 @@ export default function Struktur() {
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308995/proximiti-2026/struktur/reval_satria.webp"
               nama="Reval Satria"
               kelas="IT 49-01"
-              jabatan="WAKIL KETUA"
+              jabatan="KM 01"
             />
             <Pengurus
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308997/proximiti-2026/struktur/ariiq_m.webp"
               nama="Ariiq M"
               kelas="IT 49-01"
-              jabatan="SEKRE 1"
+              jabatan="KM 02"
             />
             <Pengurus
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
               nama="Zhafran Ujep"
               kelas="IT 49-01"
-              jabatan="SEKRE 2"
+              jabatan="KM 03"
             />
             <Pengurus
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
               nama="Dimas Dirda"
               kelas="IT 49-01"
-              jabatan="BENDAHARA 1"
+              jabatan="KM 04"
             />
             <Pengurus
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
               nama="Josjis"
               kelas="IT 49-01"
-              jabatan="BENDAHARA 2"
+              jabatan="KM 05"
             />
           </div>
         </section>

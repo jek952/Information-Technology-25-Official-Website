@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase-admin";
 import { z } from "zod";
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 import { verifyAdminSession } from "@/app/lib/auth";
 
 const InformationSchema = z.object({
@@ -9,9 +9,17 @@ const InformationSchema = z.object({
   type: z.string().min(2, "Tipe informasi diperlukan"),
   organizer: z.string().min(2, "Penyelenggara diperlukan"),
   avail_date: z.string().min(8, "Tanggal ketersediaan diperlukan"),
-  image: z.string().refine((val) => val.startsWith("https://") || val.startsWith("http://") || val.startsWith("/"), {
-    message: "URL foto tidak valid",
-  }),
+  image: z
+    .string()
+    .refine(
+      (val) =>
+        val.startsWith("https://") ||
+        val.startsWith("http://") ||
+        val.startsWith("/"),
+      {
+        message: "URL foto tidak valid",
+      },
+    ),
   excerpt: z.string().min(5, "Ringkasan minimal 5 karakter"),
   content: z.string().min(10, "Konten minimal 10 karakter"),
 });
@@ -38,7 +46,7 @@ export async function GET(req: NextRequest) {
     console.error("GET information error:", error);
     return NextResponse.json(
       { success: false, error: "Gagal memuat data informasi." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -48,16 +56,23 @@ export async function POST(req: NextRequest) {
     const session = await verifyAdminSession(req);
     if (!session.authenticated) {
       return NextResponse.json(
-        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
-        { status: 401 }
+        {
+          success: false,
+          error:
+            session.error || "Akses ditolak: Autentikasi admin diperlukan.",
+        },
+        { status: 401 },
       );
     }
 
     const body = await req.json();
     if (JSON.stringify(body).length > 100000) {
       return NextResponse.json(
-        { success: false, error: "Ukuran konten informasi terlalu besar (maksimal 100 KB)." },
-        { status: 413 }
+        {
+          success: false,
+          error: "Ukuran konten informasi terlalu besar (maksimal 100 KB).",
+        },
+        { status: 413 },
       );
     }
     const parsed = InformationSchema.safeParse(body);
@@ -65,11 +80,40 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json(
         { success: false, error: parsed.error.issues[0].message },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const cleanContent = DOMPurify.sanitize(parsed.data.content);
+    const cleanContent = sanitizeHtml(parsed.data.content, {
+      allowedTags: [
+        "p",
+        "br",
+        "strong",
+        "b",
+        "em",
+        "i",
+        "u",
+        "ul",
+        "ol",
+        "li",
+        "blockquote",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "a",
+      ],
+      allowedAttributes: {
+        a: ["href", "target", "rel"],
+      },
+      allowedSchemes: ["http", "https", "mailto"],
+      transformTags: {
+        a: sanitizeHtml.simpleTransform("a", {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        }),
+      },
+    });
 
     const docRef = await db.collection("information").add({
       ...parsed.data,
@@ -86,7 +130,7 @@ export async function POST(req: NextRequest) {
     console.error("POST information error:", error);
     return NextResponse.json(
       { success: false, error: "Gagal menyimpan informasi." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -96,16 +140,23 @@ export async function PUT(req: NextRequest) {
     const session = await verifyAdminSession(req);
     if (!session.authenticated) {
       return NextResponse.json(
-        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
-        { status: 401 }
+        {
+          success: false,
+          error:
+            session.error || "Akses ditolak: Autentikasi admin diperlukan.",
+        },
+        { status: 401 },
       );
     }
 
     const rawBody = await req.json();
     if (JSON.stringify(rawBody).length > 100000) {
       return NextResponse.json(
-        { success: false, error: "Ukuran konten informasi terlalu besar (maksimal 100 KB)." },
-        { status: 413 }
+        {
+          success: false,
+          error: "Ukuran konten informasi terlalu besar (maksimal 100 KB).",
+        },
+        { status: 413 },
       );
     }
     const { id, ...rest } = rawBody;
@@ -113,7 +164,7 @@ export async function PUT(req: NextRequest) {
     if (!id || typeof id !== "string" || !SAFE_DOC_ID.test(id)) {
       return NextResponse.json(
         { success: false, error: "Format ID informasi tidak valid." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -121,7 +172,7 @@ export async function PUT(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json(
         { success: false, error: parsed.error.issues[0].message },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -130,11 +181,40 @@ export async function PUT(req: NextRequest) {
     if (!existing.exists) {
       return NextResponse.json(
         { success: false, error: "Data informasi tidak ditemukan." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
-    const cleanContent = DOMPurify.sanitize(parsed.data.content);
+    const cleanContent = sanitizeHtml(parsed.data.content, {
+      allowedTags: [
+        "p",
+        "br",
+        "strong",
+        "b",
+        "em",
+        "i",
+        "u",
+        "ul",
+        "ol",
+        "li",
+        "blockquote",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "a",
+      ],
+      allowedAttributes: {
+        a: ["href", "target", "rel"],
+      },
+      allowedSchemes: ["http", "https", "mailto"],
+      transformTags: {
+        a: sanitizeHtml.simpleTransform("a", {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        }),
+      },
+    });
 
     await docRef.update({
       ...parsed.data,
@@ -150,7 +230,7 @@ export async function PUT(req: NextRequest) {
     console.error("PUT information error:", error);
     return NextResponse.json(
       { success: false, error: "Gagal memperbarui informasi." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -160,8 +240,12 @@ export async function DELETE(req: NextRequest) {
     const session = await verifyAdminSession(req);
     if (!session.authenticated) {
       return NextResponse.json(
-        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
-        { status: 401 }
+        {
+          success: false,
+          error:
+            session.error || "Akses ditolak: Autentikasi admin diperlukan.",
+        },
+        { status: 401 },
       );
     }
 
@@ -180,7 +264,7 @@ export async function DELETE(req: NextRequest) {
     if (!id || typeof id !== "string" || !SAFE_DOC_ID.test(id)) {
       return NextResponse.json(
         { success: false, error: "Format ID informasi tidak valid." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -189,7 +273,7 @@ export async function DELETE(req: NextRequest) {
     if (!existing.exists) {
       return NextResponse.json(
         { success: false, error: "Data informasi tidak ditemukan." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -203,8 +287,7 @@ export async function DELETE(req: NextRequest) {
     console.error("DELETE information error:", error);
     return NextResponse.json(
       { success: false, error: "Gagal menghapus informasi." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

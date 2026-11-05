@@ -13,13 +13,13 @@ export default function Pengurus({
   jabatan,
 }: PengurusProps) {
   return (
-    <div className="border w-[80%] sm:w-full hover:bg-hijauhunter transition-all ease-in-out p-3 sm:p-4 text-center hover:text-jeruk">
+    <div className="border rounded-2xl w-[80%] sm:w-full hover:bg-hijauhunter transition-all ease-in-out p-3 sm:p-4 text-center hover:text-jeruk">
       <img
         src={foto}
         alt={nama}
         loading="lazy"
         decoding="async"
-        className="w-full h-48 md:h-45  object-cover border-2 hover:border-jeruk"
+        className="w-full rounded-2xl h-48 md:h-45  object-cover border-2 hover:border-jeruk"
       />
       <h2 className="mt-4 text-lg font-semibold">{nama}</h2>
       <p className="text-sm">{kelas}</p>

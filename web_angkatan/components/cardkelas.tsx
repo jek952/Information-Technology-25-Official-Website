@@ -43,7 +43,13 @@ export default function Card({
         className="rounded-full object-cover shrink-0 w-22 h-22 md:w-24 md:h-24"
       />
       <div className="w-full">
-        <h2 className="mt-2 md:mt-5 flex h-14 w-full items-center justify-center overflow-hidden text-center text-xl font-medium text-gray-900">
+        <h2
+          className={
+            variant == "waldos"
+              ? "mt-2 md:mt-2 flex h-9 w-full items-center justify-center overflow-hidden text-center text-xl font-medium text-gray-900"
+              : "mt-2 md:mt-5 flex h-14 w-full items-center justify-center overflow-hidden text-center text-xl font-medium text-gray-900"
+          }
+        >
           <span className="line-clamp-2">{nama}</span>
         </h2>
 

@@ -271,7 +271,7 @@ export default function Home() {
         </section>
 
         {/* === INFORMATION HUB PREVIEW === */}
-        <section className="w-11/12 mx-auto flex justify-center items-center flex-col gap-6 py-16">
+        <section className="max-w-[1400px] mx-auto flex justify-center items-center flex-col gap-6 py-16">
           <span className="text-center">
             <h1 className="font-semibold text-4xl pb-3 md:text-5xl">Information Hub</h1>
             <p className="text-gray-500">Event, beasiswa, dan info terbaru untuk warga angkatan</p>

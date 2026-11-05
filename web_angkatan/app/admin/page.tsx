@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
@@ -81,9 +82,14 @@ export default function AdminInfo() {
         fetch("/api/galeri").then((r) => r.json()),
       ]);
 
-      const wargaList: any[] = wargaRes.success && Array.isArray(wargaRes.data) ? wargaRes.data : [];
-      const infoList: any[] = infoRes.success && Array.isArray(infoRes.data) ? infoRes.data : [];
-      const galeriList: any[] = galeriRes.success && Array.isArray(galeriRes.data) ? galeriRes.data : [];
+      const wargaList: any[] =
+        wargaRes.success && Array.isArray(wargaRes.data) ? wargaRes.data : [];
+      const infoList: any[] =
+        infoRes.success && Array.isArray(infoRes.data) ? infoRes.data : [];
+      const galeriList: any[] =
+        galeriRes.success && Array.isArray(galeriRes.data)
+          ? galeriRes.data
+          : [];
 
       const counts: Record<string, number> = {};
       wargaList.forEach((w) => {
@@ -144,7 +150,9 @@ export default function AdminInfo() {
     foto: "",
   });
   const [modalPhotoFile, setModalPhotoFile] = useState<File | null>(null);
-  const [modalPhotoPreview, setModalPhotoPreview] = useState<string | null>(null);
+  const [modalPhotoPreview, setModalPhotoPreview] = useState<string | null>(
+    null,
+  );
 
   // Cropper State
   const [isCropperOpen, setIsCropperOpen] = useState(false);
@@ -153,17 +161,32 @@ export default function AdminInfo() {
   const [cropperAspect, setCropperAspect] = useState<number>(1);
   const [cropperTitle, setCropperTitle] = useState<string>("Sesuaikan Foto");
   const [cropperSubtitle, setCropperSubtitle] = useState<string>("");
-  const [cropTarget, setCropTarget] = useState<"modalWarga" | "tambahWarga" | "banner" | "editInfoCover" | "tambahInfoCover" | "galeriFoto">("modalWarga");
-  const [tambahWargaPreview, setTambahWargaPreview] = useState<string | null>(null);
+  const [cropTarget, setCropTarget] = useState<
+    | "modalWarga"
+    | "tambahWarga"
+    | "banner"
+    | "editInfoCover"
+    | "tambahInfoCover"
+    | "galeriFoto"
+  >("modalWarga");
+  const [tambahWargaPreview, setTambahWargaPreview] = useState<string | null>(
+    null,
+  );
 
   // Admin Galeri State
   const [adminGaleriList, setAdminGaleriList] = useState<any[]>([]);
   const [adminGaleriLoading, setAdminGaleriLoading] = useState(false);
-  const [selectedGaleriCategory, setSelectedGaleriCategory] = useState<string | null>(null);
-  const [galeriUploadKategori, setGaleriUploadKategori] = useState<"proximiti" | "megabit" | "ultras">("proximiti");
+  const [selectedGaleriCategory, setSelectedGaleriCategory] = useState<
+    string | null
+  >(null);
+  const [galeriUploadKategori, setGaleriUploadKategori] = useState<
+    "proximiti" | "megabit" | "ultras"
+  >("proximiti");
   const [galeriUploadCaption, setGaleriUploadCaption] = useState("");
   const [galeriUploadFile, setGaleriUploadFile] = useState<File | null>(null);
-  const [galeriUploadPreview, setGaleriUploadPreview] = useState<string | null>(null);
+  const [galeriUploadPreview, setGaleriUploadPreview] = useState<string | null>(
+    null,
+  );
   const [galeriUploading, setGaleriUploading] = useState(false);
 
   const fetchAdminGaleri = async () => {
@@ -258,7 +281,9 @@ export default function AdminInfo() {
   const [infoList, setInfoList] = useState<any[]>([]);
   const [infoLoading, setInfoLoading] = useState(false);
   const [infoSearch, setInfoSearch] = useState("");
-  const [selectedInfoCategory, setSelectedInfoCategory] = useState<string | null>(null);
+  const [selectedInfoCategory, setSelectedInfoCategory] = useState<
+    string | null
+  >(null);
   const [infoModalMode, setInfoModalMode] = useState<"add" | "edit">("edit");
 
   const [isEditInfoModalOpen, setIsEditInfoModalOpen] = useState(false);
@@ -272,7 +297,9 @@ export default function AdminInfo() {
     content: "",
   });
   const [editInfoCoverFile, setEditInfoCoverFile] = useState<File | null>(null);
-  const [editInfoCoverPreview, setEditInfoCoverPreview] = useState<string | null>(null);
+  const [editInfoCoverPreview, setEditInfoCoverPreview] = useState<
+    string | null
+  >(null);
   const [savingInfo, setSavingInfo] = useState(false);
 
   const fetchAllInfo = async () => {
@@ -358,7 +385,8 @@ export default function AdminInfo() {
       }
 
       const cleanExcerpt =
-        editInfoForm.content.replace(/<[^>]+>/g, "").slice(0, 150) || editInfoForm.title;
+        editInfoForm.content.replace(/<[^>]+>/g, "").slice(0, 150) ||
+        editInfoForm.title;
 
       const payload = {
         title: editInfoForm.title,
@@ -374,7 +402,9 @@ export default function AdminInfo() {
         method: infoModalMode === "add" ? "POST" : "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          infoModalMode === "add" ? payload : { id: editInfoForm.id, ...payload }
+          infoModalMode === "add"
+            ? payload
+            : { id: editInfoForm.id, ...payload },
         ),
       });
 
@@ -386,7 +416,7 @@ export default function AdminInfo() {
       toast.success(
         infoModalMode === "add"
           ? "Postingan baru berhasil ditambahkan."
-          : "Informasi berhasil diperbarui."
+          : "Informasi berhasil diperbarui.",
       );
       setIsEditInfoModalOpen(false);
       fetchAllInfo();
@@ -803,9 +833,11 @@ export default function AdminInfo() {
         }
       }
 
-      const res = await fetch("/api/information", {
+      const response = await fetch("/api/information", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           title,
           type,
@@ -815,20 +847,37 @@ export default function AdminInfo() {
           excerpt: content.replace(/<[^>]+>/g, "").slice(0, 150) || title,
           content,
         }),
-      }).then((r) => r.json());
+      });
 
-      if (res.success) {
-        toast.success("Postingan berhasil disimpan ke database!");
-        setTitle("");
-        setOrganizer("");
-        setAvailDate("");
-        setContent("");
-        setCoverPreview(null);
-        setSelectedFile(null);
-        fetchDashboardData();
-      } else {
-        toast.error("Gagal menyimpan: " + (res.error || "Terjadi kesalahan."));
+      const responseText = await response.text();
+
+      console.log("Status API:", response.status);
+      console.log("Response API:", responseText);
+
+      let res;
+
+      try {
+        res = JSON.parse(responseText);
+      } catch {
+        throw new Error(
+          `API mengembalikan respons yang bukan JSON: ${responseText}`,
+        );
       }
+
+      if (!response.ok || !res.success) {
+        throw new Error(res.error || `HTTP ${response.status}`);
+      }
+
+      toast.success("Postingan berhasil disimpan ke database!");
+
+      setTitle("");
+      setOrganizer("");
+      setAvailDate("");
+      setContent("");
+      setCoverPreview(null);
+      setSelectedFile(null);
+
+      fetchDashboardData();
     } catch (err: any) {
       toast.error("Error: " + err.message);
     } finally {
@@ -950,8 +999,12 @@ export default function AdminInfo() {
             <div className="w-full max-w-5xl space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                  <p className="text-xs text-gray-500 mt-1">Pusat kendali data dan informasi angkatan IT 25</p>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Admin Dashboard
+                  </h1>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Pusat kendali data dan informasi angkatan IT 25
+                  </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <a
@@ -961,7 +1014,10 @@ export default function AdminInfo() {
                     className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
                   >
                     <span>Lihat Web</span>
-                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[11px]" />
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="text-[11px]"
+                    />
                   </a>
                 </div>
               </div>
@@ -969,15 +1025,22 @@ export default function AdminInfo() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Warga</span>
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Total Warga
+                    </span>
                     <div className="w-9 h-9 rounded-lg bg-emerald-50 text-hijauhunter flex items-center justify-center">
                       <FontAwesomeIcon icon={faUsers} />
                     </div>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900 mt-3">{stats.totalWarga}</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-3">
+                    {stats.totalWarga}
+                  </p>
                   <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
                     {Object.entries(stats.classCount).map(([kelas, count]) => (
-                      <span key={kelas} className="text-[11px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-medium">
+                      <span
+                        key={kelas}
+                        className="text-[11px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-medium"
+                      >
                         {kelas}: {count}
                       </span>
                     ))}
@@ -986,12 +1049,16 @@ export default function AdminInfo() {
 
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Information Hub</span>
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Information Hub
+                    </span>
                     <div className="w-9 h-9 rounded-lg bg-emerald-50 text-hijauhunter flex items-center justify-center">
                       <FontAwesomeIcon icon={faNewspaper} />
                     </div>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900 mt-3">{stats.totalInfo}</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-3">
+                    {stats.totalInfo}
+                  </p>
                   <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-100">
                     Pengumuman dan event aktif
                   </p>
@@ -999,12 +1066,16 @@ export default function AdminInfo() {
 
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Foto Galeri</span>
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Foto Galeri
+                    </span>
                     <div className="w-9 h-9 rounded-lg bg-emerald-50 text-hijauhunter flex items-center justify-center">
                       <FontAwesomeIcon icon={faImages} />
                     </div>
                   </div>
-                  <p className="text-3xl font-bold text-gray-900 mt-3">{stats.totalGaleri}</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-3">
+                    {stats.totalGaleri}
+                  </p>
                   <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-100">
                     Dokumentasi kegiatan angkatan
                   </p>
@@ -1012,7 +1083,9 @@ export default function AdminInfo() {
               </div>
 
               <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Aksi Cepat</h2>
+                <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                  Aksi Cepat
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     onClick={() => setActive("Tambah Informasi")}
@@ -1022,8 +1095,12 @@ export default function AdminInfo() {
                       <FontAwesomeIcon icon={faPenToSquare} />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">Tulis Informasi Baru</p>
-                      <p className="text-xs text-gray-500">Buat artikel berita, agenda, atau event angkatan</p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        Tulis Informasi Baru
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Buat artikel berita, agenda, atau event angkatan
+                      </p>
                     </div>
                   </button>
 
@@ -1035,8 +1112,12 @@ export default function AdminInfo() {
                       <FontAwesomeIcon icon={faUserPlus} />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">Tambah Warga Manual</p>
-                      <p className="text-xs text-gray-500">Input data anggota kelas satu per satu</p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        Tambah Warga Manual
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Input data anggota kelas satu per satu
+                      </p>
                     </div>
                   </button>
                 </div>
@@ -1045,15 +1126,24 @@ export default function AdminInfo() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-sm font-bold text-gray-900">Warga Terdaftar Terbaru</h2>
-                    <span className="text-xs text-gray-400">{stats.recentWarga.length} orang terakhir</span>
+                    <h2 className="text-sm font-bold text-gray-900">
+                      Warga Terdaftar Terbaru
+                    </h2>
+                    <span className="text-xs text-gray-400">
+                      {stats.recentWarga.length} orang terakhir
+                    </span>
                   </div>
                   {stats.recentWarga.length === 0 ? (
-                    <p className="text-xs text-gray-400 py-6 text-center">Belum ada data warga.</p>
+                    <p className="text-xs text-gray-400 py-6 text-center">
+                      Belum ada data warga.
+                    </p>
                   ) : (
                     <div className="divide-y divide-gray-100">
                       {stats.recentWarga.map((w) => (
-                        <div key={w.id || w.email || w.nama} className="py-2.5 flex items-center justify-between gap-3">
+                        <div
+                          key={w.id || w.email || w.nama}
+                          className="py-2.5 flex items-center justify-between gap-3"
+                        >
                           <div className="flex items-center gap-3 min-w-0">
                             <img
                               src={w.foto || "/logo-proximiti.png"}
@@ -1061,8 +1151,12 @@ export default function AdminInfo() {
                               className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
                             />
                             <div className="min-w-0">
-                              <p className="text-xs font-semibold text-gray-900 truncate">{w.nama}</p>
-                              <p className="text-[11px] text-gray-400 truncate">{w.email || "Tanpa email"}</p>
+                              <p className="text-xs font-semibold text-gray-900 truncate">
+                                {w.nama}
+                              </p>
+                              <p className="text-[11px] text-gray-400 truncate">
+                                {w.email || "Tanpa email"}
+                              </p>
                             </div>
                           </div>
                           <span className="text-[11px] font-medium px-2 py-0.5 bg-gray-100 text-gray-700 rounded shrink-0">
@@ -1076,18 +1170,31 @@ export default function AdminInfo() {
 
                 <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-sm font-bold text-gray-900">Informasi Terakhir</h2>
-                    <span className="text-xs text-gray-400">{stats.recentInfo.length} postingan</span>
+                    <h2 className="text-sm font-bold text-gray-900">
+                      Informasi Terakhir
+                    </h2>
+                    <span className="text-xs text-gray-400">
+                      {stats.recentInfo.length} postingan
+                    </span>
                   </div>
                   {stats.recentInfo.length === 0 ? (
-                    <p className="text-xs text-gray-400 py-6 text-center">Belum ada postingan informasi.</p>
+                    <p className="text-xs text-gray-400 py-6 text-center">
+                      Belum ada postingan informasi.
+                    </p>
                   ) : (
                     <div className="divide-y divide-gray-100">
                       {stats.recentInfo.map((info) => (
-                        <div key={info.id || info.title} className="py-2.5 flex items-start justify-between gap-3">
+                        <div
+                          key={info.id || info.title}
+                          className="py-2.5 flex items-start justify-between gap-3"
+                        >
                           <div className="min-w-0">
-                            <p className="text-xs font-semibold text-gray-900 truncate">{info.title}</p>
-                            <p className="text-[11px] text-gray-400 mt-0.5 truncate">{info.organizer || "Pengurus IT 25"}</p>
+                            <p className="text-xs font-semibold text-gray-900 truncate">
+                              {info.title}
+                            </p>
+                            <p className="text-[11px] text-gray-400 mt-0.5 truncate">
+                              {info.organizer || "Pengurus IT 25"}
+                            </p>
                           </div>
                           <span className="text-[11px] px-2 py-0.5 bg-emerald-50 text-hijauhunter rounded font-medium shrink-0">
                             {info.type || "Event"}
@@ -1101,412 +1208,523 @@ export default function AdminInfo() {
             </div>
           )}
 
-          {active === "Update Warga" && (() => {
-            const defaultClasses = ["IT-49-01", "IT-49-02", "IT-49-03", "IT-49-04", "IT-49-05", "IT-49-INT"];
-            const classList = Array.from(
-              new Set([...defaultClasses, ...wargaList.map((w) => w.kelas).filter(Boolean)])
-            ).sort();
+          {active === "Update Warga" &&
+            (() => {
+              const defaultClasses = [
+                "IT-49-01",
+                "IT-49-02",
+                "IT-49-03",
+                "IT-49-04",
+                "IT-49-05",
+                "IT-49-INT",
+              ];
+              const classList = Array.from(
+                new Set([
+                  ...defaultClasses,
+                  ...wargaList.map((w) => w.kelas).filter(Boolean),
+                ]),
+              ).sort();
 
-            const currentBanner =
-              (selectedClass && classMeta[selectedClass]?.banner) ||
-              "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307752/proximiti-2026/galeri/proximiti/f1b4kso4lakrmnkykk5h.jpg";
+              const currentBanner =
+                (selectedClass && classMeta[selectedClass]?.banner) ||
+                "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307752/proximiti-2026/galeri/proximiti/f1b4kso4lakrmnkykk5h.jpg";
 
-            const waldos = selectedClass ? wargaList.find((w) => w.kelas === selectedClass && w.role === "waldos") : null;
-            const ketua = selectedClass ? wargaList.find((w) => w.kelas === selectedClass && w.role === "ketua_kelas") : null;
-            const members = selectedClass
-              ? wargaList
-                  .filter((w) => w.kelas === selectedClass && (w.role === "anggota" || !w.role))
-                  .filter(
-                    (w) =>
-                      !wargaSearch ||
-                      w.nama.toLowerCase().includes(wargaSearch.toLowerCase()) ||
-                      (w.email && w.email.toLowerCase().includes(wargaSearch.toLowerCase()))
+              const waldos = selectedClass
+                ? wargaList.find(
+                    (w) => w.kelas === selectedClass && w.role === "waldos",
                   )
-              : [];
+                : null;
+              const ketua = selectedClass
+                ? wargaList.find(
+                    (w) =>
+                      w.kelas === selectedClass && w.role === "ketua_kelas",
+                  )
+                : null;
+              const members = selectedClass
+                ? wargaList
+                    .filter(
+                      (w) =>
+                        w.kelas === selectedClass &&
+                        (w.role === "anggota" || !w.role),
+                    )
+                    .filter(
+                      (w) =>
+                        !wargaSearch ||
+                        w.nama
+                          .toLowerCase()
+                          .includes(wargaSearch.toLowerCase()) ||
+                        (w.email &&
+                          w.email
+                            .toLowerCase()
+                            .includes(wargaSearch.toLowerCase())),
+                    )
+                : [];
 
-            return (
-              <div className="w-full max-w-5xl space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Kelola Data Warga</h1>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Data dikelompokkan per kelas dengan pengaturan header (Waldos, Ketua Kelas, Banner) dan data anggota.
-                    </p>
+              return (
+                <div className="w-full max-w-5xl space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <div>
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        Kelola Data Warga
+                      </h1>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Data dikelompokkan per kelas dengan pengaturan header
+                        (Waldos, Ketua Kelas, Banner) dan data anggota.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          fetchAllWarga();
+                          fetchClassMeta();
+                        }}
+                        disabled={wargaLoading}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowRotateRight}
+                          className={wargaLoading ? "animate-spin" : ""}
+                        />
+                        <span>Muat Ulang</span>
+                      </button>
+                      <button
+                        onClick={() =>
+                          openAddModal("anggota", selectedClass || undefined)
+                        }
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                        <span>Tambah Warga</span>
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        fetchAllWarga();
-                        fetchClassMeta();
-                      }}
-                      disabled={wargaLoading}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faArrowRotateRight} className={wargaLoading ? "animate-spin" : ""} />
-                      <span>Muat Ulang</span>
-                    </button>
-                    <button
-                      onClick={() => openAddModal("anggota", selectedClass || undefined)}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                      <span>Tambah Warga</span>
-                    </button>
-                  </div>
-                </div>
 
-                <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-3">
-                    Pilih Kelas
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {classList.map((c) => {
-                      const count = wargaList.filter((w) => w.kelas === c).length;
-                      const isSelected = selectedClass === c;
-                      return (
-                        <button
-                          key={c}
-                          onClick={() => setSelectedClass(selectedClass === c ? null : c)}
-                          className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
-                            isSelected
-                              ? "bg-hijauhunter text-white shadow-sm"
-                              : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
-                          }`}
-                        >
-                          <span>{c}</span>
-                          <span
-                            className={`text-[11px] px-1.5 py-0.2 rounded-full ${
-                              isSelected ? "bg-white/20 text-white" : "bg-gray-200 text-gray-700"
+                  <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-3">
+                      Pilih Kelas
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {classList.map((c) => {
+                        const count = wargaList.filter(
+                          (w) => w.kelas === c,
+                        ).length;
+                        const isSelected = selectedClass === c;
+                        return (
+                          <button
+                            key={c}
+                            onClick={() =>
+                              setSelectedClass(selectedClass === c ? null : c)
+                            }
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
+                              isSelected
+                                ? "bg-hijauhunter text-white shadow-sm"
+                                : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
                             }`}
                           >
-                            {count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {!selectedClass ? (
-                  <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
-                    <div className="w-10 h-10 rounded-xl bg-gray-100 text-gray-400 mx-auto flex items-center justify-center mb-3 text-sm">
-                      <FontAwesomeIcon icon={faUsers} />
+                            <span>{c}</span>
+                            <span
+                              className={`text-[11px] px-1.5 py-0.2 rounded-full ${
+                                isSelected
+                                  ? "bg-white/20 text-white"
+                                  : "bg-gray-200 text-gray-700"
+                              }`}
+                            >
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
-                    <p className="text-xs font-semibold text-gray-700">Pilih salah satu kelas di atas</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Klik salah satu tombol kelas untuk melihat banner header, dosen wali, ketua kelas, dan daftar mahasiswa.
-                    </p>
                   </div>
-                ) : (
-                  <>
-                    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
-                  <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                    <div>
-                      <h2 className="text-base font-bold text-gray-900">
-                        Header Kelas {selectedClass}
-                      </h2>
-                      <p className="text-xs text-gray-500">
-                        Pengaturan banner kelas dan pimpinan (Dosen Wali & Ketua Kelas)
+
+                  {!selectedClass ? (
+                    <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
+                      <div className="w-10 h-10 rounded-xl bg-gray-100 text-gray-400 mx-auto flex items-center justify-center mb-3 text-sm">
+                        <FontAwesomeIcon icon={faUsers} />
+                      </div>
+                      <p className="text-xs font-semibold text-gray-700">
+                        Pilih salah satu kelas di atas
                       </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-gray-600">Foto Banner Header Kelas</span>
-                      <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-lg border border-gray-300 transition cursor-pointer">
-                        <FontAwesomeIcon icon={faCamera} className="text-xs" />
-                        <span>{uploadingBanner ? "Mengunggah..." : "Ganti Banner"}</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={uploadingBanner}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setCropperRawSrc(URL.createObjectURL(file));
-                              setCropperShape("rect");
-                              setCropperAspect(16 / 7);
-                              setCropperTitle(`Sesuaikan Banner Header ${selectedClass}`);
-                              setCropperSubtitle("Geser dan atur area lanskap banner kelas.");
-                              setCropTarget("banner");
-                              setIsCropperOpen(true);
-                              e.target.value = "";
-                            }
-                          }}
-                        />
-                      </label>
-                    </div>
-                    <div className="relative h-44 w-full rounded-xl overflow-hidden border border-gray-200 bg-gray-900">
-                      <img
-                        src={currentBanner}
-                        alt={`Banner ${selectedClass}`}
-                        className="w-full h-full object-cover opacity-85"
-                      />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="text-3xl font-extrabold text-white tracking-wider">
-                          {selectedClass}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col justify-between">
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-emerald-100 text-hijauhunter flex items-center justify-center text-xs">
-                            <FontAwesomeIcon icon={faUserTie} />
-                          </div>
-                          <div>
-                            <span className="text-xs font-bold text-gray-900 block">Dosen Wali (Waldos)</span>
-                            <span className="text-[11px] text-gray-500">{selectedClass}</span>
-                          </div>
-                        </div>
-                        {waldos && (
-                          <button
-                            onClick={() => openEditModal(waldos)}
-                            className="text-xs font-semibold text-hijauhunter hover:underline cursor-pointer"
-                          >
-                            Edit
-                          </button>
-                        )}
-                      </div>
-
-                      {waldos ? (
-                        <div className="flex items-center gap-3 pt-2 border-t border-gray-200/60">
-                          <img
-                            src={waldos.foto || "/logo-proximiti.png"}
-                            alt={waldos.nama}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500/40 shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <p className="text-sm font-bold text-gray-900 truncate">{waldos.nama}</p>
-                            <p className="text-xs text-gray-500 truncate">{waldos.email || "Belum ada email"}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="py-4 text-center border-t border-dashed border-gray-200">
-                          <p className="text-xs text-gray-400 mb-2">Belum ada Dosen Wali</p>
-                          <button
-                            onClick={() => openAddModal("waldos", selectedClass)}
-                            className="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-hijauhunter hover:bg-emerald-100 font-semibold transition cursor-pointer"
-                          >
-                            + Tetapkan Dosen Wali
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col justify-between">
-                      <div className="flex items-start justify-between gap-3 mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs">
-                            <FontAwesomeIcon icon={faCrown} />
-                          </div>
-                          <div>
-                            <span className="text-xs font-bold text-gray-900 block">Ketua Kelas</span>
-                            <span className="text-[11px] text-gray-500">{selectedClass}</span>
-                          </div>
-                        </div>
-                        {ketua && (
-                          <button
-                            onClick={() => openEditModal(ketua)}
-                            className="text-xs font-semibold text-amber-800 hover:underline cursor-pointer"
-                          >
-                            Edit
-                          </button>
-                        )}
-                      </div>
-
-                      {ketua ? (
-                        <div className="flex items-center gap-3 pt-2 border-t border-gray-200/60">
-                          <img
-                            src={ketua.foto || "/logo-proximiti.png"}
-                            alt={ketua.nama}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-amber-500/40 shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <p className="text-sm font-bold text-gray-900 truncate">{ketua.nama}</p>
-                            <p className="text-xs text-gray-500 truncate">{ketua.email || "Belum ada email"}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="py-4 text-center border-t border-dashed border-gray-200">
-                          <p className="text-xs text-gray-400 mb-2">Belum ada Ketua Kelas</p>
-                          <button
-                            onClick={() => openAddModal("ketua_kelas", selectedClass)}
-                            className="text-xs px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 font-semibold transition cursor-pointer"
-                          >
-                            + Tetapkan Ketua Kelas
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-gray-100">
-                    <div>
-                      <h2 className="text-base font-bold text-gray-900">
-                        Data Anggota Mahasiswa {selectedClass}
-                      </h2>
-                      <p className="text-xs text-gray-500">
-                        Daftar mahasiswa yang terdaftar di kelas ini ({members.length} orang)
+                      <p className="text-[11px] text-gray-400 mt-0.5">
+                        Klik salah satu tombol kelas untuk melihat banner
+                        header, dosen wali, ketua kelas, dan daftar mahasiswa.
                       </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <div className="relative">
-                        <FontAwesomeIcon
-                          icon={faMagnifyingGlass}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
-                        />
-                        <input
-                          type="text"
-                          value={wargaSearch}
-                          onChange={(e) => setWargaSearch(e.target.value)}
-                          placeholder="Cari nama atau email..."
-                          className="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter w-48 sm:w-60"
-                        />
-                      </div>
-                      <button
-                        onClick={() => openAddModal("anggota", selectedClass)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition cursor-pointer"
-                      >
-                        <FontAwesomeIcon icon={faPlus} className="text-xs" />
-                        <span>Tambah Anggota</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {wargaLoading ? (
-                    <div className="py-12 text-center text-xs text-gray-400">
-                      Memuat data warga...
-                    </div>
-                  ) : members.length === 0 ? (
-                    <div className="py-12 text-center text-gray-400 border border-dashed border-gray-200 rounded-xl">
-                      <p className="text-xs">
-                        {wargaSearch
-                          ? "Tidak ada anggota yang cocok dengan pencarian."
-                          : `Belum ada anggota terdaftar untuk kelas ${selectedClass}.`}
-                      </p>
-                      <button
-                        onClick={() => openAddModal("anggota", selectedClass)}
-                        className="mt-3 text-xs px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition cursor-pointer"
-                      >
-                        + Tambah Mahasiswa Pertama
-                      </button>
                     </div>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs">
-                        <thead>
-                          <tr className="border-b border-gray-200 text-gray-500 font-semibold uppercase tracking-wider text-[11px]">
-                            <th className="py-3 px-3">Mahasiswa</th>
-                            <th className="py-3 px-3">Email</th>
-                            <th className="py-3 px-3">Media Sosial</th>
-                            <th className="py-3 px-3 text-right">Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                          {members.map((w) => (
-                            <tr key={w.id} className="hover:bg-gray-50/70 transition">
-                              <td className="py-3 px-3">
-                                <div className="flex items-center gap-3">
-                                  <img
-                                    src={w.foto || "/logo-proximiti.png"}
-                                    alt={w.nama}
-                                    className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
-                                  />
-                                  <div>
-                                    <p className="font-semibold text-gray-900">{w.nama}</p>
-                                    <span className="text-[10px] text-gray-400 font-medium">
-                                      {w.role === "anggota" || !w.role ? "Anggota" : w.role}
-                                    </span>
-                                  </div>
+                    <>
+                      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+                        <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                          <div>
+                            <h2 className="text-base font-bold text-gray-900">
+                              Header Kelas {selectedClass}
+                            </h2>
+                            <p className="text-xs text-gray-500">
+                              Pengaturan banner kelas dan pimpinan (Dosen Wali &
+                              Ketua Kelas)
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-xs font-semibold text-gray-600">
+                              Foto Banner Header Kelas
+                            </span>
+                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-lg border border-gray-300 transition cursor-pointer">
+                              <FontAwesomeIcon
+                                icon={faCamera}
+                                className="text-xs"
+                              />
+                              <span>
+                                {uploadingBanner
+                                  ? "Mengunggah..."
+                                  : "Ganti Banner"}
+                              </span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={uploadingBanner}
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    setCropperRawSrc(URL.createObjectURL(file));
+                                    setCropperShape("rect");
+                                    setCropperAspect(16 / 7);
+                                    setCropperTitle(
+                                      `Sesuaikan Banner Header ${selectedClass}`,
+                                    );
+                                    setCropperSubtitle(
+                                      "Geser dan atur area lanskap banner kelas.",
+                                    );
+                                    setCropTarget("banner");
+                                    setIsCropperOpen(true);
+                                    e.target.value = "";
+                                  }
+                                }}
+                              />
+                            </label>
+                          </div>
+                          <div className="relative h-44 w-full rounded-xl overflow-hidden border border-gray-200 bg-gray-900">
+                            <img
+                              src={currentBanner}
+                              alt={`Banner ${selectedClass}`}
+                              className="w-full h-full object-cover opacity-85"
+                            />
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                              <span className="text-3xl font-extrabold text-white tracking-wider">
+                                {selectedClass}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                          <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col justify-between">
+                            <div className="flex items-start justify-between gap-3 mb-3">
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-hijauhunter flex items-center justify-center text-xs">
+                                  <FontAwesomeIcon icon={faUserTie} />
                                 </div>
-                              </td>
-                              <td className="py-3 px-3 text-gray-600">
-                                {w.email || <span className="text-gray-300">—</span>}
-                              </td>
-                              <td className="py-3 px-3">
-                                <div className="flex items-center gap-1.5">
-                                  {w.instagram ? (
-                                    <a
-                                      href={w.instagram}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="px-2 py-0.5 rounded bg-pink-50 text-pink-700 text-[10px] font-medium hover:underline"
-                                    >
-                                      IG
-                                    </a>
-                                  ) : null}
-                                  {w.linkedin ? (
-                                    <a
-                                      href={w.linkedin}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-medium hover:underline"
-                                    >
-                                      LinkedIn
-                                    </a>
-                                  ) : null}
-                                  {w.github ? (
-                                    <a
-                                      href={w.github}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-[10px] font-medium hover:underline"
-                                    >
-                                      GitHub
-                                    </a>
-                                  ) : null}
-                                  {!w.instagram && !w.linkedin && !w.github && (
-                                    <span className="text-gray-300 text-[11px]">—</span>
-                                  )}
+                                <div>
+                                  <span className="text-xs font-bold text-gray-900 block">
+                                    Dosen Wali (Waldos)
+                                  </span>
+                                  <span className="text-[11px] text-gray-500">
+                                    {selectedClass}
+                                  </span>
                                 </div>
-                              </td>
-                              <td className="py-3 px-3 text-right">
-                                <div className="inline-flex items-center gap-1.5">
-                                  <button
-                                    onClick={() => openEditModal(w)}
-                                    className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
+                              </div>
+                              {waldos && (
+                                <button
+                                  onClick={() => openEditModal(waldos)}
+                                  className="text-xs font-semibold text-hijauhunter hover:underline cursor-pointer"
+                                >
+                                  Edit
+                                </button>
+                              )}
+                            </div>
+
+                            {waldos ? (
+                              <div className="flex items-center gap-3 pt-2 border-t border-gray-200/60">
+                                <img
+                                  src={waldos.foto || "/logo-proximiti.png"}
+                                  alt={waldos.nama}
+                                  className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500/40 shrink-0"
+                                />
+                                <div className="min-w-0">
+                                  <p className="text-sm font-bold text-gray-900 truncate">
+                                    {waldos.nama}
+                                  </p>
+                                  <p className="text-xs text-gray-500 truncate">
+                                    {waldos.email || "Belum ada email"}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="py-4 text-center border-t border-dashed border-gray-200">
+                                <p className="text-xs text-gray-400 mb-2">
+                                  Belum ada Dosen Wali
+                                </p>
+                                <button
+                                  onClick={() =>
+                                    openAddModal("waldos", selectedClass)
+                                  }
+                                  className="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-hijauhunter hover:bg-emerald-100 font-semibold transition cursor-pointer"
+                                >
+                                  + Tetapkan Dosen Wali
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col justify-between">
+                            <div className="flex items-start justify-between gap-3 mb-3">
+                              <div className="flex items-center gap-2">
+                                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs">
+                                  <FontAwesomeIcon icon={faCrown} />
+                                </div>
+                                <div>
+                                  <span className="text-xs font-bold text-gray-900 block">
+                                    Ketua Kelas
+                                  </span>
+                                  <span className="text-[11px] text-gray-500">
+                                    {selectedClass}
+                                  </span>
+                                </div>
+                              </div>
+                              {ketua && (
+                                <button
+                                  onClick={() => openEditModal(ketua)}
+                                  className="text-xs font-semibold text-amber-800 hover:underline cursor-pointer"
+                                >
+                                  Edit
+                                </button>
+                              )}
+                            </div>
+
+                            {ketua ? (
+                              <div className="flex items-center gap-3 pt-2 border-t border-gray-200/60">
+                                <img
+                                  src={ketua.foto || "/logo-proximiti.png"}
+                                  alt={ketua.nama}
+                                  className="w-12 h-12 rounded-full object-cover border-2 border-amber-500/40 shrink-0"
+                                />
+                                <div className="min-w-0">
+                                  <p className="text-sm font-bold text-gray-900 truncate">
+                                    {ketua.nama}
+                                  </p>
+                                  <p className="text-xs text-gray-500 truncate">
+                                    {ketua.email || "Belum ada email"}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="py-4 text-center border-t border-dashed border-gray-200">
+                                <p className="text-xs text-gray-400 mb-2">
+                                  Belum ada Ketua Kelas
+                                </p>
+                                <button
+                                  onClick={() =>
+                                    openAddModal("ketua_kelas", selectedClass)
+                                  }
+                                  className="text-xs px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 font-semibold transition cursor-pointer"
+                                >
+                                  + Tetapkan Ketua Kelas
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-gray-100">
+                          <div>
+                            <h2 className="text-base font-bold text-gray-900">
+                              Data Anggota Mahasiswa {selectedClass}
+                            </h2>
+                            <p className="text-xs text-gray-500">
+                              Daftar mahasiswa yang terdaftar di kelas ini (
+                              {members.length} orang)
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <div className="relative">
+                              <FontAwesomeIcon
+                                icon={faMagnifyingGlass}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
+                              />
+                              <input
+                                type="text"
+                                value={wargaSearch}
+                                onChange={(e) => setWargaSearch(e.target.value)}
+                                placeholder="Cari nama atau email..."
+                                className="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter w-48 sm:w-60"
+                              />
+                            </div>
+                            <button
+                              onClick={() =>
+                                openAddModal("anggota", selectedClass)
+                              }
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition cursor-pointer"
+                            >
+                              <FontAwesomeIcon
+                                icon={faPlus}
+                                className="text-xs"
+                              />
+                              <span>Tambah Anggota</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {wargaLoading ? (
+                          <div className="py-12 text-center text-xs text-gray-400">
+                            Memuat data warga...
+                          </div>
+                        ) : members.length === 0 ? (
+                          <div className="py-12 text-center text-gray-400 border border-dashed border-gray-200 rounded-xl">
+                            <p className="text-xs">
+                              {wargaSearch
+                                ? "Tidak ada anggota yang cocok dengan pencarian."
+                                : `Belum ada anggota terdaftar untuk kelas ${selectedClass}.`}
+                            </p>
+                            <button
+                              onClick={() =>
+                                openAddModal("anggota", selectedClass)
+                              }
+                              className="mt-3 text-xs px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition cursor-pointer"
+                            >
+                              + Tambah Mahasiswa Pertama
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left text-xs">
+                              <thead>
+                                <tr className="border-b border-gray-200 text-gray-500 font-semibold uppercase tracking-wider text-[11px]">
+                                  <th className="py-3 px-3">Mahasiswa</th>
+                                  <th className="py-3 px-3">Email</th>
+                                  <th className="py-3 px-3">Media Sosial</th>
+                                  <th className="py-3 px-3 text-right">Aksi</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-100">
+                                {members.map((w) => (
+                                  <tr
+                                    key={w.id}
+                                    className="hover:bg-gray-50/70 transition"
                                   >
-                                    <FontAwesomeIcon icon={faPenToSquare} className="mr-1" />
-                                    <span>Edit</span>
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteWarga(w.id, w.nama)}
-                                    className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer"
-                                  >
-                                    <FontAwesomeIcon icon={faTrash} className="mr-1" />
-                                    <span>Hapus</span>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                                    <td className="py-3 px-3">
+                                      <div className="flex items-center gap-3">
+                                        <img
+                                          src={w.foto || "/logo-proximiti.png"}
+                                          alt={w.nama}
+                                          className="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
+                                        />
+                                        <div>
+                                          <p className="font-semibold text-gray-900">
+                                            {w.nama}
+                                          </p>
+                                          <span className="text-[10px] text-gray-400 font-medium">
+                                            {w.role === "anggota" || !w.role
+                                              ? "Anggota"
+                                              : w.role}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-3 text-gray-600">
+                                      {w.email || (
+                                        <span className="text-gray-300">—</span>
+                                      )}
+                                    </td>
+                                    <td className="py-3 px-3">
+                                      <div className="flex items-center gap-1.5">
+                                        {w.instagram ? (
+                                          <a
+                                            href={w.instagram}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-2 py-0.5 rounded bg-pink-50 text-pink-700 text-[10px] font-medium hover:underline"
+                                          >
+                                            IG
+                                          </a>
+                                        ) : null}
+                                        {w.linkedin ? (
+                                          <a
+                                            href={w.linkedin}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-medium hover:underline"
+                                          >
+                                            LinkedIn
+                                          </a>
+                                        ) : null}
+                                        {w.github ? (
+                                          <a
+                                            href={w.github}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-[10px] font-medium hover:underline"
+                                          >
+                                            GitHub
+                                          </a>
+                                        ) : null}
+                                        {!w.instagram &&
+                                          !w.linkedin &&
+                                          !w.github && (
+                                            <span className="text-gray-300 text-[11px]">
+                                              —
+                                            </span>
+                                          )}
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-3 text-right">
+                                      <div className="inline-flex items-center gap-1.5">
+                                        <button
+                                          onClick={() => openEditModal(w)}
+                                          className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faPenToSquare}
+                                            className="mr-1"
+                                          />
+                                          <span>Edit</span>
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleDeleteWarga(w.id, w.nama)
+                                          }
+                                          className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer"
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faTrash}
+                                            className="mr-1"
+                                          />
+                                          <span>Hapus</span>
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
-              </>
-            )}
-          </div>
-        );
-      })()}
+              );
+            })()}
 
           {active === "Tambah Warga" && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
                 <FontAwesomeIcon icon={faPlus} className="text-hijauterang" />
-                <h2 className="text-2xl font-bold">
-                  Tambah Data Warga 25
-                </h2>
+                <h2 className="text-2xl font-bold">Tambah Data Warga 25</h2>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -1571,10 +1789,13 @@ export default function AdminInfo() {
 
                     {(() => {
                       const existingWaldos = wargaList.find(
-                        (w) => w.kelas === createWarga.kelas && w.role === "waldos"
+                        (w) =>
+                          w.kelas === createWarga.kelas && w.role === "waldos",
                       );
                       const existingKetua = wargaList.find(
-                        (w) => w.kelas === createWarga.kelas && w.role === "ketua_kelas"
+                        (w) =>
+                          w.kelas === createWarga.kelas &&
+                          w.role === "ketua_kelas",
                       );
                       return (
                         <>
@@ -1587,25 +1808,31 @@ export default function AdminInfo() {
                           >
                             <option value="anggota">Anggota</option>
                             <option value="ketua_kelas">
-                              {existingKetua ? `Ketua Kelas (Gantikan ${existingKetua.nama})` : "Ketua Kelas"}
+                              {existingKetua
+                                ? `Ketua Kelas (Gantikan ${existingKetua.nama})`
+                                : "Ketua Kelas"}
                             </option>
                             {existingWaldos ? (
                               <option value="waldos" disabled>
                                 Dosen Wali (Sudah ada: {existingWaldos.nama})
                               </option>
                             ) : (
-                              <option value="waldos">Dosen Wali (Waldos)</option>
+                              <option value="waldos">
+                                Dosen Wali (Waldos)
+                              </option>
                             )}
                           </select>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className="pointer-events-none absolute text-xs right-4 top-[47px] text-gray-500"
                           />
-                          {createWarga.role === "ketua_kelas" && existingKetua && (
-                            <p className="mt-2 text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
-                              Ketua kelas saat ini ({existingKetua.nama}) akan otomatis beralih menjadi Anggota.
-                            </p>
-                          )}
+                          {createWarga.role === "ketua_kelas" &&
+                            existingKetua && (
+                              <p className="mt-2 text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                                Ketua kelas saat ini ({existingKetua.nama}) akan
+                                otomatis beralih menjadi Anggota.
+                              </p>
+                            )}
                         </>
                       );
                     })()}
@@ -1705,7 +1932,9 @@ export default function AdminInfo() {
                           setCropperShape("round");
                           setCropperAspect(1);
                           setCropperTitle("Sesuaikan Foto Profil Warga");
-                          setCropperSubtitle("Geser dan sesuaikan agar wajah/badan berada tepat di dalam lingkaran.");
+                          setCropperSubtitle(
+                            "Geser dan sesuaikan agar wajah/badan berada tepat di dalam lingkaran.",
+                          );
                           setCropTarget("tambahWarga");
                           setIsCropperOpen(true);
                           e.target.value = "";
@@ -1721,12 +1950,15 @@ export default function AdminInfo() {
                           alt="Preview"
                           className="w-16 h-16 rounded-full object-cover border-2 border-emerald-500/40"
                         />
-                        <span className="text-xs text-gray-500">Foto profil siap disimpan (lingkaran WebP)</span>
+                        <span className="text-xs text-gray-500">
+                          Foto profil siap disimpan (lingkaran WebP)
+                        </span>
                       </div>
                     )}
 
                     <p className="mt-2 text-xs text-gray-500">
-                      Format JPG, PNG, atau WebP. Gambar otomatis disesuaikan dalam bentuk lingkaran profil.
+                      Format JPG, PNG, atau WebP. Gambar otomatis disesuaikan
+                      dalam bentuk lingkaran profil.
                     </p>
                   </div>
                 </div>
@@ -1784,6 +2016,9 @@ export default function AdminInfo() {
                     >
                       <option value="Event Angkatan">Event Angkatan</option>
                       <option value="Event Kampus">Event Kampus</option>
+                      <option value="Event Luar Kampus">
+                        Event Luar Kampus
+                      </option>
                       <option value="Beasiswa">Beasiswa</option>
                       <option value="Perlombaan">Perlombaan</option>
                     </select>
@@ -1873,428 +2108,511 @@ export default function AdminInfo() {
             </div>
           )}
 
-          {active === "Update Informasi" && (() => {
-            const categories = ["Event Angkatan", "Event Kampus", "Beasiswa", "Perlombaan"];
+          {active === "Update Informasi" &&
+            (() => {
+              const categories = [
+                "Event Angkatan",
+                "Event Kampus",
+                "Event Luar Kampus",
+                "Beasiswa",
+                "Perlombaan",
+              ];
 
-            const itemsInCategory = selectedInfoCategory
-              ? infoList.filter((item) => item.type === selectedInfoCategory)
-              : [];
+              const itemsInCategory = selectedInfoCategory
+                ? infoList.filter((item) => item.type === selectedInfoCategory)
+                : [];
 
-            const filteredInfo = itemsInCategory.filter(
-              (item) =>
-                !infoSearch ||
-                item.title?.toLowerCase().includes(infoSearch.toLowerCase()) ||
-                item.organizer?.toLowerCase().includes(infoSearch.toLowerCase())
-            );
+              const filteredInfo = itemsInCategory.filter(
+                (item) =>
+                  !infoSearch ||
+                  item.title
+                    ?.toLowerCase()
+                    .includes(infoSearch.toLowerCase()) ||
+                  item.organizer
+                    ?.toLowerCase()
+                    .includes(infoSearch.toLowerCase()),
+              );
 
-            return (
-              <div className="w-full max-w-5xl space-y-6">
-                {/* Header Card */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Kelola Informasi & Agenda</h1>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Pilih kategori terlebih dahulu untuk melihat dan mengelola postingan.
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={fetchAllInfo}
-                      disabled={infoLoading}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faArrowRotateRight} className={infoLoading ? "animate-spin" : ""} />
-                      <span>Muat Ulang</span>
-                    </button>
-                    <button
-                      onClick={() => openAddInfoModal(selectedInfoCategory || undefined)}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                      <span>Tulis Informasi Baru</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Category Selector Tabs */}
-                <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map((cat) => {
-                      const count = infoList.filter((item) => item.type === cat).length;
-                      const isSelected = selectedInfoCategory === cat;
-                      return (
-                        <button
-                          key={cat}
-                          onClick={() => setSelectedInfoCategory(isSelected ? null : cat)}
-                          className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
-                            isSelected
-                              ? "bg-hijauhunter text-white shadow-sm ring-2 ring-hijauhunter/20"
-                              : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
-                          }`}
-                        >
-                          <span>{cat}</span>
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                              isSelected ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
-                            }`}
-                          >
-                            {count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Aturan UI/UX: Sebelum dipilih gausa nampil isinya */}
-                {!selectedInfoCategory ? (
-                  <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-hijauhunter flex items-center justify-center mx-auto mb-3 text-lg">
-                      <FontAwesomeIcon icon={faNewspaper} />
+              return (
+                <div className="w-full max-w-5xl space-y-6">
+                  {/* Header Card */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <div>
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        Kelola Informasi & Agenda
+                      </h1>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Pilih kategori terlebih dahulu untuk melihat dan
+                        mengelola postingan.
+                      </p>
                     </div>
-                    <p className="text-sm font-semibold text-gray-800">
-                      Pilih kategori informasi di atas untuk melihat dan mengelola postingan.
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
-                      Daftar postingan dikelompokkan per kategori (Event Angkatan, Event Kampus, Beasiswa, atau Perlombaan) agar pengelolaan rapi dan terfokus.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {/* Subheader per category with search and add button */}
-                    <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div>
-                        <h2 className="text-base font-bold text-gray-900">
-                          Kategori: {selectedInfoCategory}
-                        </h2>
-                        <p className="text-xs text-gray-500">
-                          Menampilkan {itemsInCategory.length} postingan yang terdaftar.
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="relative">
-                          <FontAwesomeIcon
-                            icon={faMagnifyingGlass}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
-                          />
-                          <input
-                            type="text"
-                            value={infoSearch}
-                            onChange={(e) => setInfoSearch(e.target.value)}
-                            placeholder="Cari judul atau penyelenggara..."
-                            className="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter w-48 sm:w-60"
-                          />
-                        </div>
-                        <button
-                          onClick={() => openAddInfoModal(selectedInfoCategory)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition cursor-pointer"
-                        >
-                          <FontAwesomeIcon icon={faPlus} className="text-xs" />
-                          <span>Tambah Post</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Posts Cards */}
-                    {infoLoading ? (
-                      <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-xs text-gray-400">
-                        Memuat daftar informasi...
-                      </div>
-                    ) : filteredInfo.length === 0 ? (
-                      <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
-                        <p className="text-xs font-semibold text-gray-700">
-                          {infoSearch
-                            ? "Tidak ada postingan yang sesuai dengan kata kunci pencarian."
-                            : `Belum ada postingan yang dibuat untuk kategori ${selectedInfoCategory}.`}
-                        </p>
-                        <button
-                          onClick={() => openAddInfoModal(selectedInfoCategory)}
-                          className="mt-3 text-xs px-3.5 py-1.5 rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white font-semibold transition cursor-pointer"
-                        >
-                          + Buat Postingan Pertama
-                        </button>
-                      </div>
-                    ) : (
-                      filteredInfo.map((item) => {
-                        const isExpired = item.avail_date && new Date() > new Date(item.avail_date);
-                        return (
-                          <div
-                            key={item.id}
-                            className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm hover:border-gray-300 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                          >
-                            <div className="flex items-start gap-4 min-w-0">
-                              <img
-                                src={item.image || "/BG-IT.jpeg"}
-                                alt={item.title}
-                                className="w-24 h-16 sm:w-32 sm:h-20 rounded-xl object-cover border border-gray-200 shrink-0 bg-gray-100"
-                              />
-                              <div className="min-w-0 space-y-1">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-emerald-50 text-hijauhunter border-emerald-200">
-                                    {item.type || selectedInfoCategory}
-                                  </span>
-                                  {item.avail_date && (
-                                    <span
-                                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                                        isExpired
-                                          ? "bg-gray-100 text-gray-600 border border-gray-200"
-                                          : "bg-emerald-50 text-hijauhunter border border-emerald-200"
-                                      }`}
-                                    >
-                                      {isExpired ? "Telah Berakhir" : "Aktif"}
-                                    </span>
-                                  )}
-                                  {(item.avail_date || item.availDate) && (
-                                    <span className="text-[11px] text-gray-500 flex items-center gap-1">
-                                      <FontAwesomeIcon icon={faCalendarDays} className="text-[10px]" />
-                                      <span>Batas: {item.avail_date || item.availDate}</span>
-                                    </span>
-                                  )}
-                                </div>
-                                <h3 className="text-sm sm:text-base font-bold text-gray-900 truncate">
-                                  {item.title}
-                                </h3>
-                                <p className="text-xs text-gray-500 flex items-center gap-1.5 truncate">
-                                  <FontAwesomeIcon icon={faBuilding} className="text-[10px] text-gray-400" />
-                                  <span>{item.organizer || "Pengurus IT 25"}</span>
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                              <a
-                                href={`/information/${item.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer flex items-center gap-1.5"
-                              >
-                                <span>Lihat</span>
-                                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[10px]" />
-                              </a>
-                              <button
-                                onClick={() => openEditInfoModal(item)}
-                                className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer flex items-center gap-1.5"
-                              >
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                                <span>Edit</span>
-                              </button>
-                              <button
-                                onClick={() => handleDeleteInfo(item.id, item.title)}
-                                className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer flex items-center gap-1.5"
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                                <span>Hapus</span>
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })()}
-
-          {active === "Kelola Galeri" && (() => {
-            const galeriCategories = [
-              { id: "proximiti", label: "Proximiti" },
-              { id: "megabit", label: "Megabit" },
-              { id: "ultras", label: "Ultras" },
-            ];
-
-            const photosInCat = selectedGaleriCategory
-              ? adminGaleriList.filter(
-                  (p) => p.kategori?.toLowerCase() === selectedGaleriCategory.toLowerCase()
-                )
-              : [];
-
-            return (
-              <div className="w-full max-w-5xl space-y-6">
-                {/* Header Card */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Kelola Galeri Dokumentasi</h1>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Pilih album kategori terlebih dahulu untuk mengelola foto dokumentasi IT 25.
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={fetchAdminGaleri}
-                      disabled={adminGaleriLoading}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faArrowRotateRight} className={adminGaleriLoading ? "animate-spin" : ""} />
-                      <span>Muat Ulang</span>
-                    </button>
-                    <button
-                      onClick={() => setActive("Upload Foto Galeri")}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                      <span>Upload Foto Baru</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Album Category Tabs */}
-                <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-                  <div className="flex flex-wrap gap-2">
-                    {galeriCategories.map((cat) => {
-                      const count = adminGaleriList.filter(
-                        (p) => p.kategori?.toLowerCase() === cat.id
-                      ).length;
-                      const isSelected = selectedGaleriCategory === cat.id;
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() =>
-                            setSelectedGaleriCategory(isSelected ? null : cat.id)
-                          }
-                          className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
-                            isSelected
-                              ? "bg-hijauhunter text-white shadow-sm ring-2 ring-hijauhunter/20"
-                              : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
-                          }`}
-                        >
-                          <span>Album {cat.label}</span>
-                          <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                              isSelected
-                                ? "bg-white/25 text-white"
-                                : "bg-gray-200 text-gray-700"
-                            }`}
-                          >
-                            {count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Aturan UI/UX: Sebelum dipilih gausa nampil isinya */}
-                {!selectedGaleriCategory ? (
-                  <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-hijauhunter flex items-center justify-center mx-auto mb-3 text-lg">
-                      <FontAwesomeIcon icon={faImages} />
-                    </div>
-                    <p className="text-sm font-semibold text-gray-800">
-                      Pilih album di atas untuk melihat dan mengelola foto galeri.
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
-                      Dokumentasi dipisahkan berdasarkan album (Proximiti, Megabit, atau Ultras) agar pengelolaan foto tertata rapi.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
-                      <div>
-                        <h2 className="text-base font-bold text-gray-900 capitalize">
-                          Album: {selectedGaleriCategory}
-                        </h2>
-                        <p className="text-xs text-gray-500">
-                          {photosInCat.length} foto tersimpan dalam album ini.
-                        </p>
-                      </div>
-
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => {
-                          setGaleriUploadKategori(selectedGaleriCategory as any);
-                          setActive("Upload Foto Galeri");
-                        }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition cursor-pointer"
+                        onClick={fetchAllInfo}
+                        disabled={infoLoading}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
                       >
-                        <FontAwesomeIcon icon={faPlus} className="text-xs" />
-                        <span>Upload ke Album Ini</span>
+                        <FontAwesomeIcon
+                          icon={faArrowRotateRight}
+                          className={infoLoading ? "animate-spin" : ""}
+                        />
+                        <span>Muat Ulang</span>
+                      </button>
+                      <button
+                        onClick={() =>
+                          openAddInfoModal(selectedInfoCategory || undefined)
+                        }
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                        <span>Tulis Informasi Baru</span>
                       </button>
                     </div>
+                  </div>
 
-                    {adminGaleriLoading ? (
-                      <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-xs text-gray-400">
-                        Memuat foto galeri...
-                      </div>
-                    ) : photosInCat.length === 0 ? (
-                      <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
-                        <p className="text-xs font-semibold text-gray-700">
-                          Belum ada foto dalam album {selectedGaleriCategory}.
-                        </p>
-                        <button
-                          onClick={() => {
-                            setGaleriUploadKategori(selectedGaleriCategory as any);
-                            setActive("Upload Foto Galeri");
-                          }}
-                          className="mt-3 text-xs px-3.5 py-1.5 rounded-xl bg-hijauhunter text-white font-semibold transition cursor-pointer"
-                        >
-                          + Upload Foto Pertama
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {photosInCat.map((photo) => (
-                          <div
-                            key={photo.id}
-                            className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group"
+                  {/* Category Selector Tabs */}
+                  <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map((cat) => {
+                        const count = infoList.filter(
+                          (item) => item.type === cat,
+                        ).length;
+                        const isSelected = selectedInfoCategory === cat;
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() =>
+                              setSelectedInfoCategory(isSelected ? null : cat)
+                            }
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
+                              isSelected
+                                ? "bg-hijauhunter text-white shadow-sm ring-2 ring-hijauhunter/20"
+                                : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
+                            }`}
                           >
-                            <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
-                              <img
-                                src={photo.src}
-                                alt={photo.caption || "Foto galeri"}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                              <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/60 text-white text-[10px] font-bold uppercase backdrop-blur-xs">
-                                {photo.kategori}
-                              </span>
-                            </div>
+                            <span>{cat}</span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                isSelected
+                                  ? "bg-white/25 text-white"
+                                  : "bg-gray-200 text-gray-700"
+                              }`}
+                            >
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
 
-                            <div className="p-3 flex flex-col justify-between flex-1 gap-2">
-                              {photo.caption ? (
-                                <p className="text-xs text-gray-700 font-medium line-clamp-1">
-                                  {photo.caption}
-                                </p>
-                              ) : (
-                                <span className="text-[11px] text-gray-400 italic">Tanpa keterangan</span>
-                              )}
+                  {/* Aturan UI/UX: Sebelum dipilih gausa nampil isinya */}
+                  {!selectedInfoCategory ? (
+                    <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
+                      <div className="w-12 h-12 rounded-full bg-emerald-50 text-hijauhunter flex items-center justify-center mx-auto mb-3 text-lg">
+                        <FontAwesomeIcon icon={faNewspaper} />
+                      </div>
+                      <p className="text-sm font-semibold text-gray-800">
+                        Pilih kategori informasi di atas untuk melihat dan
+                        mengelola postingan.
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
+                        Daftar postingan dikelompokkan per kategori (Event
+                        Angkatan, Event Kampus, Beasiswa, atau Perlombaan) agar
+                        pengelolaan rapi dan terfokus.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Subheader per category with search and add button */}
+                      <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                          <h2 className="text-base font-bold text-gray-900">
+                            Kategori: {selectedInfoCategory}
+                          </h2>
+                          <p className="text-xs text-gray-500">
+                            Menampilkan {itemsInCategory.length} postingan yang
+                            terdaftar.
+                          </p>
+                        </div>
 
-                              <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <div className="flex items-center gap-2">
+                          <div className="relative">
+                            <FontAwesomeIcon
+                              icon={faMagnifyingGlass}
+                              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
+                            />
+                            <input
+                              type="text"
+                              value={infoSearch}
+                              onChange={(e) => setInfoSearch(e.target.value)}
+                              placeholder="Cari judul atau penyelenggara..."
+                              className="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter w-48 sm:w-60"
+                            />
+                          </div>
+                          <button
+                            onClick={() =>
+                              openAddInfoModal(selectedInfoCategory)
+                            }
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition cursor-pointer"
+                          >
+                            <FontAwesomeIcon
+                              icon={faPlus}
+                              className="text-xs"
+                            />
+                            <span>Tambah Post</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Posts Cards */}
+                      {infoLoading ? (
+                        <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-xs text-gray-400">
+                          Memuat daftar informasi...
+                        </div>
+                      ) : filteredInfo.length === 0 ? (
+                        <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
+                          <p className="text-xs font-semibold text-gray-700">
+                            {infoSearch
+                              ? "Tidak ada postingan yang sesuai dengan kata kunci pencarian."
+                              : `Belum ada postingan yang dibuat untuk kategori ${selectedInfoCategory}.`}
+                          </p>
+                          <button
+                            onClick={() =>
+                              openAddInfoModal(selectedInfoCategory)
+                            }
+                            className="mt-3 text-xs px-3.5 py-1.5 rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white font-semibold transition cursor-pointer"
+                          >
+                            + Buat Postingan Pertama
+                          </button>
+                        </div>
+                      ) : (
+                        filteredInfo.map((item) => {
+                          const isExpired =
+                            item.avail_date &&
+                            new Date() > new Date(item.avail_date);
+                          return (
+                            <div
+                              key={item.id}
+                              className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm hover:border-gray-300 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                            >
+                              <div className="flex items-start gap-4 min-w-0">
+                                <img
+                                  src={item.image || "/BG-IT.jpeg"}
+                                  alt={item.title}
+                                  className="w-24 h-16 sm:w-32 sm:h-20 rounded-xl object-cover border border-gray-200 shrink-0 bg-gray-100"
+                                />
+                                <div className="min-w-0 space-y-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-emerald-50 text-hijauhunter border-emerald-200">
+                                      {item.type || selectedInfoCategory}
+                                    </span>
+                                    {item.avail_date && (
+                                      <span
+                                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                                          isExpired
+                                            ? "bg-gray-100 text-gray-600 border border-gray-200"
+                                            : "bg-emerald-50 text-hijauhunter border border-emerald-200"
+                                        }`}
+                                      >
+                                        {isExpired ? "Telah Berakhir" : "Aktif"}
+                                      </span>
+                                    )}
+                                    {(item.avail_date || item.availDate) && (
+                                      <span className="text-[11px] text-gray-500 flex items-center gap-1">
+                                        <FontAwesomeIcon
+                                          icon={faCalendarDays}
+                                          className="text-[10px]"
+                                        />
+                                        <span>
+                                          Batas:{" "}
+                                          {item.avail_date || item.availDate}
+                                        </span>
+                                      </span>
+                                    )}
+                                  </div>
+                                  <h3 className="text-sm sm:text-base font-bold text-gray-900 truncate">
+                                    {item.title}
+                                  </h3>
+                                  <p className="text-xs text-gray-500 flex items-center gap-1.5 truncate">
+                                    <FontAwesomeIcon
+                                      icon={faBuilding}
+                                      className="text-[10px] text-gray-400"
+                                    />
+                                    <span>
+                                      {item.organizer || "Pengurus IT 25"}
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                                 <a
-                                  href={photo.src}
+                                  href={`/information/${item.id}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-[11px] text-gray-600 hover:text-hijauhunter font-semibold flex items-center gap-1"
+                                  className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer flex items-center gap-1.5"
                                 >
-                                  <span>Lihat HD</span>
-                                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[9px]" />
+                                  <span>Lihat</span>
+                                  <FontAwesomeIcon
+                                    icon={faArrowUpRightFromSquare}
+                                    className="text-[10px]"
+                                  />
                                 </a>
-
                                 <button
-                                  onClick={() => handleDeleteGaleri(photo.id)}
-                                  className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+                                  onClick={() => openEditInfoModal(item)}
+                                  className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer flex items-center gap-1.5"
                                 >
-                                  <FontAwesomeIcon icon={faTrash} className="text-[10px]" />
+                                  <FontAwesomeIcon icon={faPenToSquare} />
+                                  <span>Edit</span>
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteInfo(item.id, item.title)
+                                  }
+                                  className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer flex items-center gap-1.5"
+                                >
+                                  <FontAwesomeIcon icon={faTrash} />
                                   <span>Hapus</span>
                                 </button>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          );
+                        })
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+          {active === "Kelola Galeri" &&
+            (() => {
+              const galeriCategories = [
+                { id: "proximiti", label: "Proximiti" },
+                { id: "megabit", label: "Megabit" },
+                { id: "ultras", label: "Ultras" },
+              ];
+
+              const photosInCat = selectedGaleriCategory
+                ? adminGaleriList.filter(
+                    (p) =>
+                      p.kategori?.toLowerCase() ===
+                      selectedGaleriCategory.toLowerCase(),
+                  )
+                : [];
+
+              return (
+                <div className="w-full max-w-5xl space-y-6">
+                  {/* Header Card */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <div>
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        Kelola Galeri Dokumentasi
+                      </h1>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Pilih album kategori terlebih dahulu untuk mengelola
+                        foto dokumentasi IT 25.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={fetchAdminGaleri}
+                        disabled={adminGaleriLoading}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowRotateRight}
+                          className={adminGaleriLoading ? "animate-spin" : ""}
+                        />
+                        <span>Muat Ulang</span>
+                      </button>
+                      <button
+                        onClick={() => setActive("Upload Foto Galeri")}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                        <span>Upload Foto Baru</span>
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            );
-          })()}
+
+                  {/* Album Category Tabs */}
+                  <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+                    <div className="flex flex-wrap gap-2">
+                      {galeriCategories.map((cat) => {
+                        const count = adminGaleriList.filter(
+                          (p) => p.kategori?.toLowerCase() === cat.id,
+                        ).length;
+                        const isSelected = selectedGaleriCategory === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            onClick={() =>
+                              setSelectedGaleriCategory(
+                                isSelected ? null : cat.id,
+                              )
+                            }
+                            className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
+                              isSelected
+                                ? "bg-hijauhunter text-white shadow-sm ring-2 ring-hijauhunter/20"
+                                : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
+                            }`}
+                          >
+                            <span>Album {cat.label}</span>
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                isSelected
+                                  ? "bg-white/25 text-white"
+                                  : "bg-gray-200 text-gray-700"
+                              }`}
+                            >
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Aturan UI/UX: Sebelum dipilih gausa nampil isinya */}
+                  {!selectedGaleriCategory ? (
+                    <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
+                      <div className="w-12 h-12 rounded-full bg-emerald-50 text-hijauhunter flex items-center justify-center mx-auto mb-3 text-lg">
+                        <FontAwesomeIcon icon={faImages} />
+                      </div>
+                      <p className="text-sm font-semibold text-gray-800">
+                        Pilih album di atas untuk melihat dan mengelola foto
+                        galeri.
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
+                        Dokumentasi dipisahkan berdasarkan album (Proximiti,
+                        Megabit, atau Ultras) agar pengelolaan foto tertata
+                        rapi.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                          <h2 className="text-base font-bold text-gray-900 capitalize">
+                            Album: {selectedGaleriCategory}
+                          </h2>
+                          <p className="text-xs text-gray-500">
+                            {photosInCat.length} foto tersimpan dalam album ini.
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setGaleriUploadKategori(
+                              selectedGaleriCategory as any,
+                            );
+                            setActive("Upload Foto Galeri");
+                          }}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faPlus} className="text-xs" />
+                          <span>Upload ke Album Ini</span>
+                        </button>
+                      </div>
+
+                      {adminGaleriLoading ? (
+                        <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-xs text-gray-400">
+                          Memuat foto galeri...
+                        </div>
+                      ) : photosInCat.length === 0 ? (
+                        <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
+                          <p className="text-xs font-semibold text-gray-700">
+                            Belum ada foto dalam album {selectedGaleriCategory}.
+                          </p>
+                          <button
+                            onClick={() => {
+                              setGaleriUploadKategori(
+                                selectedGaleriCategory as any,
+                              );
+                              setActive("Upload Foto Galeri");
+                            }}
+                            className="mt-3 text-xs px-3.5 py-1.5 rounded-xl bg-hijauhunter text-white font-semibold transition cursor-pointer"
+                          >
+                            + Upload Foto Pertama
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {photosInCat.map((photo) => (
+                            <div
+                              key={photo.id}
+                              className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group"
+                            >
+                              <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
+                                <img
+                                  src={photo.src}
+                                  alt={photo.caption || "Foto galeri"}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/60 text-white text-[10px] font-bold uppercase backdrop-blur-xs">
+                                  {photo.kategori}
+                                </span>
+                              </div>
+
+                              <div className="p-3 flex flex-col justify-between flex-1 gap-2">
+                                {photo.caption ? (
+                                  <p className="text-xs text-gray-700 font-medium line-clamp-1">
+                                    {photo.caption}
+                                  </p>
+                                ) : (
+                                  <span className="text-[11px] text-gray-400 italic">
+                                    Tanpa keterangan
+                                  </span>
+                                )}
+
+                                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                                  <a
+                                    href={photo.src}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[11px] text-gray-600 hover:text-hijauhunter font-semibold flex items-center gap-1"
+                                  >
+                                    <span>Lihat HD</span>
+                                    <FontAwesomeIcon
+                                      icon={faArrowUpRightFromSquare}
+                                      className="text-[9px]"
+                                    />
+                                  </a>
+
+                                  <button
+                                    onClick={() => handleDeleteGaleri(photo.id)}
+                                    className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faTrash}
+                                      className="text-[10px]"
+                                    />
+                                    <span>Hapus</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
           {active === "Upload Foto Galeri" && (
             <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-6">
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Upload Foto Galeri Baru</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Upload Foto Galeri Baru
+                  </h2>
                   <p className="text-xs text-gray-500 mt-1">
-                    Foto akan dikompresi ke WebP dan disimpan langsung ke Cloudinary serta Firestore.
+                    Foto akan dikompresi ke WebP dan disimpan langsung ke
+                    Cloudinary serta Firestore.
                   </p>
                 </div>
                 <button
@@ -2312,12 +2630,20 @@ export default function AdminInfo() {
                   </label>
                   <select
                     value={galeriUploadKategori}
-                    onChange={(e) => setGaleriUploadKategori(e.target.value as any)}
+                    onChange={(e) =>
+                      setGaleriUploadKategori(e.target.value as any)
+                    }
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter bg-white text-xs"
                   >
-                    <option value="proximiti">Proximiti (Inaugurasi & Makrab)</option>
-                    <option value="megabit">Megabit (Akademik & Prodi TI)</option>
-                    <option value="ultras">Ultras (Suporter & Solidaritas)</option>
+                    <option value="proximiti">
+                      Proximiti (Inaugurasi & Makrab)
+                    </option>
+                    <option value="megabit">
+                      Megabit (Akademik & Prodi TI)
+                    </option>
+                    <option value="ultras">
+                      Ultras (Suporter & Solidaritas)
+                    </option>
                   </select>
                 </div>
 
@@ -2347,7 +2673,10 @@ export default function AdminInfo() {
                       />
                     ) : (
                       <div className="w-40 h-28 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 shrink-0 bg-gray-50">
-                        <FontAwesomeIcon icon={faCamera} className="text-xl mb-1 text-gray-300" />
+                        <FontAwesomeIcon
+                          icon={faCamera}
+                          className="text-xl mb-1 text-gray-300"
+                        />
                         <span className="text-[10px]">Belum ada foto</span>
                       </div>
                     )}
@@ -2363,7 +2692,9 @@ export default function AdminInfo() {
                             setCropperShape("rect");
                             setCropperAspect(4 / 3);
                             setCropperTitle("Sesuaikan Foto Galeri");
-                            setCropperSubtitle("Geser dan atur area foto galeri (rasio 4:3).");
+                            setCropperSubtitle(
+                              "Geser dan atur area foto galeri (rasio 4:3).",
+                            );
                             setCropTarget("galeriFoto");
                             setIsCropperOpen(true);
                             e.target.value = "";
@@ -2372,7 +2703,8 @@ export default function AdminInfo() {
                         className="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-hijauhunter hover:file:bg-emerald-100 cursor-pointer"
                       />
                       <p className="text-[11px] text-gray-400">
-                        Format JPG, PNG, atau WebP. Foto akan dipotong sesuai rasio dan otomatis dikompresi.
+                        Format JPG, PNG, atau WebP. Foto akan dipotong sesuai
+                        rasio dan otomatis dikompresi.
                       </p>
                     </div>
                   </div>
@@ -2392,7 +2724,9 @@ export default function AdminInfo() {
                     className="px-6 py-2.5 rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white font-semibold transition cursor-pointer disabled:opacity-50 flex items-center gap-2"
                   >
                     <FontAwesomeIcon icon={faPlus} />
-                    <span>{galeriUploading ? "Mengunggah..." : "Simpan ke Galeri"}</span>
+                    <span>
+                      {galeriUploading ? "Mengunggah..." : "Simpan ke Galeri"}
+                    </span>
                   </button>
                 </div>
               </form>
@@ -2407,7 +2741,9 @@ export default function AdminInfo() {
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">
-                  {modalMode === "add" ? "Tambah Data Warga" : "Edit Data Warga"}
+                  {modalMode === "add"
+                    ? "Tambah Data Warga"
+                    : "Edit Data Warga"}
                 </h3>
                 <p className="text-xs text-gray-500">
                   Perubahan data akan langsung disimpan ke database Firestore.
@@ -2421,7 +2757,10 @@ export default function AdminInfo() {
               </button>
             </div>
 
-            <form onSubmit={handleModalSubmit} className="p-6 space-y-4 text-xs">
+            <form
+              onSubmit={handleModalSubmit}
+              className="p-6 space-y-4 text-xs"
+            >
               <div>
                 <label className="block font-semibold text-gray-700 mb-1">
                   Nama Lengkap *
@@ -2430,7 +2769,9 @@ export default function AdminInfo() {
                   type="text"
                   required
                   value={modalForm.nama}
-                  onChange={(e) => setModalForm({ ...modalForm, nama: e.target.value })}
+                  onChange={(e) =>
+                    setModalForm({ ...modalForm, nama: e.target.value })
+                  }
                   placeholder="Masukkan nama lengkap"
                   className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
@@ -2443,7 +2784,9 @@ export default function AdminInfo() {
                   </label>
                   <select
                     value={modalForm.kelas}
-                    onChange={(e) => setModalForm({ ...modalForm, kelas: e.target.value })}
+                    onChange={(e) =>
+                      setModalForm({ ...modalForm, kelas: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter bg-white"
                   >
                     <option value="IT-49-01">IT-49-01</option>
@@ -2461,21 +2804,31 @@ export default function AdminInfo() {
                   </label>
                   {(() => {
                     const existingWaldos = wargaList.find(
-                      (w) => w.kelas === modalForm.kelas && w.role === "waldos" && w.id !== modalForm.id
+                      (w) =>
+                        w.kelas === modalForm.kelas &&
+                        w.role === "waldos" &&
+                        w.id !== modalForm.id,
                     );
                     const existingKetua = wargaList.find(
-                      (w) => w.kelas === modalForm.kelas && w.role === "ketua_kelas" && w.id !== modalForm.id
+                      (w) =>
+                        w.kelas === modalForm.kelas &&
+                        w.role === "ketua_kelas" &&
+                        w.id !== modalForm.id,
                     );
                     return (
                       <>
                         <select
                           value={modalForm.role}
-                          onChange={(e) => setModalForm({ ...modalForm, role: e.target.value })}
+                          onChange={(e) =>
+                            setModalForm({ ...modalForm, role: e.target.value })
+                          }
                           className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter bg-white"
                         >
                           <option value="anggota">Anggota</option>
                           <option value="ketua_kelas">
-                            {existingKetua ? `Ketua Kelas (Gantikan ${existingKetua.nama})` : "Ketua Kelas"}
+                            {existingKetua
+                              ? `Ketua Kelas (Gantikan ${existingKetua.nama})`
+                              : "Ketua Kelas"}
                           </option>
                           {existingWaldos && modalMode === "add" ? (
                             <option value="waldos" disabled>
@@ -2483,20 +2836,28 @@ export default function AdminInfo() {
                             </option>
                           ) : (
                             <option value="waldos">
-                              {existingWaldos ? `Dosen Wali (Gantikan ${existingWaldos.nama})` : "Dosen Wali (Waldos)"}
+                              {existingWaldos
+                                ? `Dosen Wali (Gantikan ${existingWaldos.nama})`
+                                : "Dosen Wali (Waldos)"}
                             </option>
                           )}
                         </select>
                         {modalForm.role === "ketua_kelas" && existingKetua && (
                           <p className="mt-1.5 text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">
-                            Perhatian: Ketua kelas saat ini ({existingKetua.nama}) akan otomatis dialihkan menjadi Anggota.
+                            Perhatian: Ketua kelas saat ini (
+                            {existingKetua.nama}) akan otomatis dialihkan
+                            menjadi Anggota.
                           </p>
                         )}
-                        {modalForm.role === "waldos" && existingWaldos && modalMode === "edit" && (
-                          <p className="mt-1.5 text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">
-                            Perhatian: Dosen wali saat ini ({existingWaldos.nama}) akan otomatis dialihkan menjadi Anggota.
-                          </p>
-                        )}
+                        {modalForm.role === "waldos" &&
+                          existingWaldos &&
+                          modalMode === "edit" && (
+                            <p className="mt-1.5 text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">
+                              Perhatian: Dosen wali saat ini (
+                              {existingWaldos.nama}) akan otomatis dialihkan
+                              menjadi Anggota.
+                            </p>
+                          )}
                       </>
                     );
                   })()}
@@ -2510,7 +2871,9 @@ export default function AdminInfo() {
                 <input
                   type="email"
                   value={modalForm.email}
-                  onChange={(e) => setModalForm({ ...modalForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setModalForm({ ...modalForm, email: e.target.value })
+                  }
                   placeholder="contoh@mail.com"
                   className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
@@ -2518,7 +2881,10 @@ export default function AdminInfo() {
 
               <div>
                 <label className="block font-semibold text-gray-700 mb-1">
-                  Foto {modalMode === "add" ? "*" : "(Opsional jika ingin mengganti)"}
+                  Foto{" "}
+                  {modalMode === "add"
+                    ? "*"
+                    : "(Opsional jika ingin mengganti)"}
                 </label>
                 <div className="flex items-center gap-3">
                   {(modalPhotoPreview || modalForm.foto) && (
@@ -2538,7 +2904,9 @@ export default function AdminInfo() {
                         setCropperShape("round");
                         setCropperAspect(1);
                         setCropperTitle("Sesuaikan Foto Profil Mahasiswa");
-                        setCropperSubtitle("Geser dan sesuaikan agar wajah/badan berada tepat di dalam lingkaran.");
+                        setCropperSubtitle(
+                          "Geser dan sesuaikan agar wajah/badan berada tepat di dalam lingkaran.",
+                        );
                         setCropTarget("modalWarga");
                         setIsCropperOpen(true);
                         e.target.value = "";
@@ -2556,21 +2924,27 @@ export default function AdminInfo() {
                 <input
                   type="text"
                   value={modalForm.instagram}
-                  onChange={(e) => setModalForm({ ...modalForm, instagram: e.target.value })}
+                  onChange={(e) =>
+                    setModalForm({ ...modalForm, instagram: e.target.value })
+                  }
                   placeholder="Instagram (@username atau URL)"
                   className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
                 <input
                   type="text"
                   value={modalForm.linkedin}
-                  onChange={(e) => setModalForm({ ...modalForm, linkedin: e.target.value })}
+                  onChange={(e) =>
+                    setModalForm({ ...modalForm, linkedin: e.target.value })
+                  }
                   placeholder="LinkedIn (username atau URL)"
                   className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
                 <input
                   type="text"
                   value={modalForm.github}
-                  onChange={(e) => setModalForm({ ...modalForm, github: e.target.value })}
+                  onChange={(e) =>
+                    setModalForm({ ...modalForm, github: e.target.value })
+                  }
                   placeholder="GitHub (username atau URL)"
                   className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
@@ -2604,7 +2978,9 @@ export default function AdminInfo() {
             <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">
-                  {infoModalMode === "add" ? "Tambah Informasi Baru" : "Edit Informasi"}
+                  {infoModalMode === "add"
+                    ? "Tambah Informasi Baru"
+                    : "Edit Informasi"}
                 </h3>
                 <p className="text-xs text-gray-500">
                   {infoModalMode === "add"
@@ -2620,7 +2996,10 @@ export default function AdminInfo() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveInfoModal} className="p-6 space-y-4 text-xs">
+            <form
+              onSubmit={handleSaveInfoModal}
+              className="p-6 space-y-4 text-xs"
+            >
               <div>
                 <label className="block font-semibold text-gray-700 mb-1">
                   Judul Postingan *
@@ -2629,7 +3008,9 @@ export default function AdminInfo() {
                   type="text"
                   required
                   value={editInfoForm.title}
-                  onChange={(e) => setEditInfoForm({ ...editInfoForm, title: e.target.value })}
+                  onChange={(e) =>
+                    setEditInfoForm({ ...editInfoForm, title: e.target.value })
+                  }
                   placeholder="Judul informasi atau event"
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
@@ -2642,11 +3023,14 @@ export default function AdminInfo() {
                   </label>
                   <select
                     value={editInfoForm.type}
-                    onChange={(e) => setEditInfoForm({ ...editInfoForm, type: e.target.value })}
+                    onChange={(e) =>
+                      setEditInfoForm({ ...editInfoForm, type: e.target.value })
+                    }
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter bg-white"
                   >
                     <option value="Event Angkatan">Event Angkatan</option>
                     <option value="Event Kampus">Event Kampus</option>
+                    <option value="Event Luar Kampus">Event Luar Kampus</option>
                     <option value="Beasiswa">Beasiswa</option>
                     <option value="Perlombaan">Perlombaan</option>
                   </select>
@@ -2659,7 +3043,12 @@ export default function AdminInfo() {
                   <input
                     type="date"
                     value={editInfoForm.avail_date}
-                    onChange={(e) => setEditInfoForm({ ...editInfoForm, avail_date: e.target.value })}
+                    onChange={(e) =>
+                      setEditInfoForm({
+                        ...editInfoForm,
+                        avail_date: e.target.value,
+                      })
+                    }
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                   />
                 </div>
@@ -2672,7 +3061,12 @@ export default function AdminInfo() {
                 <input
                   type="text"
                   value={editInfoForm.organizer}
-                  onChange={(e) => setEditInfoForm({ ...editInfoForm, organizer: e.target.value })}
+                  onChange={(e) =>
+                    setEditInfoForm({
+                      ...editInfoForm,
+                      organizer: e.target.value,
+                    })
+                  }
                   placeholder="Misal: HIMA TI / Kemdikbud"
                   className="w-full px-3 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
                 />
@@ -2701,7 +3095,9 @@ export default function AdminInfo() {
                           setCropperShape("rect");
                           setCropperAspect(16 / 9);
                           setCropperTitle("Sesuaikan Cover Poster Informasi");
-                          setCropperSubtitle("Geser dan atur area lanskap poster informasi (16:9).");
+                          setCropperSubtitle(
+                            "Geser dan atur area lanskap poster informasi (16:9).",
+                          );
                           setCropTarget("editInfoCover");
                           setIsCropperOpen(true);
                           e.target.value = "";
@@ -2710,7 +3106,8 @@ export default function AdminInfo() {
                       className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 hover:file:bg-gray-200 cursor-pointer"
                     />
                     <p className="text-[11px] text-gray-400 mt-1">
-                      Gambar otomatis disesuaikan dalam rasio 16:9 dan dikompresi ke WebP.
+                      Gambar otomatis disesuaikan dalam rasio 16:9 dan
+                      dikompresi ke WebP.
                     </p>
                   </div>
                 </div>
@@ -2722,7 +3119,9 @@ export default function AdminInfo() {
                 </label>
                 <RichTextEditor
                   content={editInfoForm.content}
-                  onChange={(html) => setEditInfoForm({ ...editInfoForm, content: html })}
+                  onChange={(html) =>
+                    setEditInfoForm({ ...editInfoForm, content: html })
+                  }
                 />
               </div>
 
@@ -2742,8 +3141,8 @@ export default function AdminInfo() {
                   {savingInfo
                     ? "Menyimpan..."
                     : infoModalMode === "add"
-                    ? "Publikasikan"
-                    : "Simpan Perubahan"}
+                      ? "Publikasikan"
+                      : "Simpan Perubahan"}
                 </button>
               </div>
             </form>
