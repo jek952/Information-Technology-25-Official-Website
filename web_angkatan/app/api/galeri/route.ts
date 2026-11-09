@@ -11,14 +11,29 @@ const GaleriSchema = z.object({
   }),
 });
 
+const cacheStore = new Map<string, { data: any[]; timestamp: number }>();
+const CACHE_TTL_MS = 60 * 1000;
+
+function invalidateGaleriCache(): void {
+  cacheStore.clear();
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const kategori = searchParams.get("kategori");
+    const kategori = searchParams.get("kategori") || "all";
+
+    const cached = cacheStore.get(kategori);
+    const now = Date.now();
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      const response = NextResponse.json({ success: true, data: cached.data });
+      response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+      return response;
+    }
 
     let query: FirebaseFirestore.Query = db.collection("galeri");
 
-    if (kategori) {
+    if (kategori && kategori !== "all") {
       query = query.where("kategori", "==", kategori);
     }
 
@@ -28,7 +43,11 @@ export async function GET(req: NextRequest) {
       ...doc.data(),
     }));
 
-    return NextResponse.json({ success: true, data });
+    cacheStore.set(kategori, { data, timestamp: now });
+
+    const response = NextResponse.json({ success: true, data });
+    response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    return response;
   } catch (error) {
     console.error("GET galeri error:", error);
     return NextResponse.json(
@@ -68,6 +87,8 @@ export async function POST(req: NextRequest) {
       ...parsed.data,
       created_at: new Date().toISOString(),
     });
+
+    invalidateGaleriCache();
 
     return NextResponse.json({
       success: true,
@@ -113,6 +134,8 @@ export async function DELETE(req: NextRequest) {
     }
 
     await docRef.delete();
+
+    invalidateGaleriCache();
 
     return NextResponse.json({
       success: true,

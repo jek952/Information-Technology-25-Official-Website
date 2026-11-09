@@ -91,10 +91,18 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const rawBuffer = Buffer.from(arrayBuffer);
 
-    const compressedBuffer = await sharp(rawBuffer)
-      .resize(1000, 1000, { fit: "inside", withoutEnlargement: true })
-      .webp({ quality: 80, effort: 4 })
-      .toBuffer();
+    let compressedBuffer: Buffer;
+    try {
+      compressedBuffer = await sharp(rawBuffer)
+        .resize(1000, 1000, { fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 80, effort: 4 })
+        .toBuffer();
+    } catch {
+      return NextResponse.json(
+        { success: false, error: "File yang diunggah rusak atau bukan format gambar yang valid." },
+        { status: 400 }
+      );
+    }
 
     const uploadResponse = await new Promise<any>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(

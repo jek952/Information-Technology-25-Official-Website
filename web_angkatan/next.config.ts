@@ -4,6 +4,15 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["firebase-admin"],
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+    dangerouslyAllowSVG: false,
+  },
   async headers() {
     return [
       {

@@ -24,14 +24,29 @@ const InformationSchema = z.object({
   content: z.string().min(10, "Konten minimal 10 karakter"),
 });
 
+const cacheStore = new Map<string, { data: any[]; timestamp: number }>();
+const CACHE_TTL_MS = 60 * 1000;
+
+function invalidateInfoCache(): void {
+  cacheStore.clear();
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const type = searchParams.get("type");
+    const type = searchParams.get("type") || "all";
+
+    const cached = cacheStore.get(type);
+    const now = Date.now();
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      const response = NextResponse.json({ success: true, data: cached.data });
+      response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+      return response;
+    }
 
     let query: FirebaseFirestore.Query = db.collection("information");
 
-    if (type && type !== "Semua") {
+    if (type && type !== "Semua" && type !== "all") {
       query = query.where("type", "==", type);
     }
 
@@ -41,7 +56,11 @@ export async function GET(req: NextRequest) {
       ...doc.data(),
     }));
 
-    return NextResponse.json({ success: true, data });
+    cacheStore.set(type, { data, timestamp: now });
+
+    const response = NextResponse.json({ success: true, data });
+    response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    return response;
   } catch (error) {
     console.error("GET information error:", error);
     return NextResponse.json(
@@ -120,6 +139,8 @@ export async function POST(req: NextRequest) {
       content: cleanContent,
       created_at: new Date().toISOString(),
     });
+
+    invalidateInfoCache();
 
     return NextResponse.json({
       success: true,
@@ -222,6 +243,8 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     });
 
+    invalidateInfoCache();
+
     return NextResponse.json({
       success: true,
       message: "Informasi berhasil diperbarui.",
@@ -278,6 +301,8 @@ export async function DELETE(req: NextRequest) {
     }
 
     await docRef.delete();
+
+    invalidateInfoCache();
 
     return NextResponse.json({
       success: true,
