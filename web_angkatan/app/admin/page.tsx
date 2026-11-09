@@ -745,10 +745,6 @@ export default function AdminInfo() {
 
       const uploadText = await uploadResponse.text();
 
-      console.log("Status:", uploadResponse.status);
-
-      console.log("Response:", uploadText);
-
       if (!uploadResponse.ok) {
         throw new Error(`Upload gagal: ${uploadText}`);
       }
@@ -859,9 +855,6 @@ export default function AdminInfo() {
       });
 
       const responseText = await response.text();
-
-      console.log("Status API:", response.status);
-      console.log("Response API:", responseText);
 
       let res;
 
