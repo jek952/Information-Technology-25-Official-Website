@@ -51,11 +51,32 @@ const WargaSchema = z.object({
   role: z.enum(["anggota", "ketua_kelas", "waldos"]).default("anggota"),
 });
 
+const cacheStore = new Map<string, { data: any[]; timestamp: number }>();
+const CACHE_TTL_MS = 60 * 1000;
+
+function getCacheKey(kelas: string | null, role: string | null): string {
+  return `${kelas || "all"}_${role || "all"}`;
+}
+
+function invalidateWargaCache(): void {
+  cacheStore.clear();
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const kelas = searchParams.get("kelas");
     const role = searchParams.get("role");
+
+    const cacheKey = getCacheKey(kelas, role);
+    const cached = cacheStore.get(cacheKey);
+    const now = Date.now();
+
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      const response = NextResponse.json({ success: true, data: cached.data });
+      response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+      return response;
+    }
 
     let query: FirebaseFirestore.Query = db.collection("warga");
 
@@ -72,7 +93,11 @@ export async function GET(req: NextRequest) {
       ...doc.data(),
     }));
 
-    return NextResponse.json({ success: true, data });
+    cacheStore.set(cacheKey, { data, timestamp: now });
+
+    const response = NextResponse.json({ success: true, data });
+    response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    return response;
   } catch (error) {
     console.error("GET warga error:", error);
     return NextResponse.json(
@@ -155,6 +180,8 @@ export async function POST(req: NextRequest) {
       ...parsed.data,
       created_at: new Date().toISOString(),
     });
+
+    invalidateWargaCache();
 
     return NextResponse.json({
       success: true,
@@ -263,6 +290,8 @@ export async function PUT(req: NextRequest) {
       updated_at: new Date().toISOString(),
     });
 
+    invalidateWargaCache();
+
     return NextResponse.json({
       success: true,
       message: "Data warga berhasil diperbarui.",
@@ -315,6 +344,8 @@ export async function DELETE(req: NextRequest) {
     }
 
     await docRef.delete();
+
+    invalidateWargaCache();
 
     return NextResponse.json({
       success: true,

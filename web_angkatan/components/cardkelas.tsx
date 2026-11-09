@@ -16,6 +16,15 @@ type CardProps = {
   variant?: "anggota" | "waldos";
 };
 
+function safeSocialLink(url?: string): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) {
+    return trimmed;
+  }
+  return null;
+}
+
 export default function Card({
   foto,
   nama,
@@ -27,6 +36,10 @@ export default function Card({
   variant,
   ...props
 }: CardProps) {
+  const safeGithub = safeSocialLink(github);
+  const safeLinkedin = safeSocialLink(linkedin);
+  const safeInstagram = safeSocialLink(insgaram);
+
   return (
     <div
       className={
@@ -60,30 +73,53 @@ export default function Card({
         <p className="mt-1 text-center text-xs text-gray-400">{kelas}</p>
       </div>
       <span className="mt-3 md:mt-5 flex gap-2">
-        <a
-          href={github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
-        >
-          <FontAwesomeIcon icon={faGithub} className="text-xl" />
-        </a>
-        <a
-          href={linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
-        >
-          <FontAwesomeIcon icon={faLinkedin} className="text-xl" />
-        </a>
-        <a
-          href={insgaram}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
-        >
-          <FontAwesomeIcon icon={faInstagram} className="text-xl" />
-        </a>
+        {safeGithub ? (
+          <a
+            href={safeGithub}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`GitHub ${nama}`}
+            className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
+          >
+            <FontAwesomeIcon icon={faGithub} className="text-xl" />
+          </a>
+        ) : (
+          <span className="flex h-9 w-9 text-gray-300 items-center justify-center rounded-full border border-gray-100 opacity-40 cursor-not-allowed">
+            <FontAwesomeIcon icon={faGithub} className="text-xl" />
+          </span>
+        )}
+
+        {safeLinkedin ? (
+          <a
+            href={safeLinkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`LinkedIn ${nama}`}
+            className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
+          >
+            <FontAwesomeIcon icon={faLinkedin} className="text-xl" />
+          </a>
+        ) : (
+          <span className="flex h-9 w-9 text-gray-300 items-center justify-center rounded-full border border-gray-100 opacity-40 cursor-not-allowed">
+            <FontAwesomeIcon icon={faLinkedin} className="text-xl" />
+          </span>
+        )}
+
+        {safeInstagram ? (
+          <a
+            href={safeInstagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Instagram ${nama}`}
+            className="flex h-9 w-9 text-hijaugelap hover:text-white items-center justify-center rounded-full border transition duration-300 hover:scale-110 hover:bg-hijaugelap"
+          >
+            <FontAwesomeIcon icon={faInstagram} className="text-xl" />
+          </a>
+        ) : (
+          <span className="flex h-9 w-9 text-gray-300 items-center justify-center rounded-full border border-gray-100 opacity-40 cursor-not-allowed">
+            <FontAwesomeIcon icon={faInstagram} className="text-xl" />
+          </span>
+        )}
       </span>
     </div>
   );

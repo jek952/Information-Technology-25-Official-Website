@@ -125,6 +125,15 @@ export default function AdminInfo() {
   };
 
   useEffect(() => {
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) {
+          window.location.href = "/login?from=/admin";
+        }
+      })
+      .catch(() => {
+        window.location.href = "/login?from=/admin";
+      });
     fetchDashboardData();
   }, []);
 

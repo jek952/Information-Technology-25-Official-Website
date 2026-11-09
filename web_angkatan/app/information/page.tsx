@@ -6,48 +6,9 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faBuilding, faTag } from "@fortawesome/free-solid-svg-icons";
 
-// Data Dummy (Nanti diganti dengan fetch dari backend/JSON)
-const DUMMY_DATA = [
-  {
-    id: "1",
-    title: "Malam Keakraban Angkatan 25",
-    type: "Event Angkatan",
-    organizer: "Panitia Proximiti",
-    avail_date: "2027-12-01",
-    image: "/BG-IT.jpeg",
-    excerpt: "Acara malam keakraban untuk seluruh mahasiswa angkatan 25 Teknologi Informasi.",
-  },
-  {
-    id: "2",
-    title: "Beasiswa Unggulan Mahasiswa IT",
-    type: "Beasiswa",
-    organizer: "Kemdikbud",
-    avail_date: "2026-08-01", // Sudah kedaluwarsa
-    image: "/BG-Utama.jpeg",
-    excerpt: "Pendaftaran beasiswa unggulan untuk mahasiswa berprestasi semester 3 ke atas.",
-  },
-  {
-    id: "3",
-    title: "Hackathon Nasional 2026",
-    type: "Perlombaan",
-    organizer: "Kementerian Kominfo",
-    avail_date: "2027-01-15",
-    image: "/BG-IT.jpeg",
-    excerpt: "Lomba membuat inovasi aplikasi untuk menyelesaikan masalah sosial di Indonesia.",
-  },
-  {
-    id: "4",
-    title: "Seminar AI & Future of Tech",
-    type: "Event Kampus",
-    organizer: "HIMA TI",
-    avail_date: "2026-09-10", // Sudah kedaluwarsa
-    image: "/BG-Utama.jpeg",
-    excerpt: "Seminar menghadirkan pakar AI dari perusahaan teknologi terkemuka.",
-  },
-];
-
 export default function InformationHub() {
-  const [data, setData] = useState<any[]>(DUMMY_DATA);
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("Semua");
   const [filterAvail, setFilterAvail] = useState("Aktif");
 
@@ -55,11 +16,12 @@ export default function InformationHub() {
     fetch("/api/information")
       .then((res) => res.json())
       .then((res) => {
-        if (res.success && res.data?.length) {
+        if (res.success && Array.isArray(res.data)) {
           setData(res.data);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }, []);
 
   const filteredData = data.filter((item) => {

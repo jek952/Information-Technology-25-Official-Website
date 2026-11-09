@@ -15,7 +15,15 @@ import {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnUrl = searchParams.get("from") || "/admin";
+  const rawFrom = searchParams.get("from");
+  const returnUrl =
+    rawFrom &&
+    rawFrom.startsWith("/") &&
+    !rawFrom.startsWith("//") &&
+    !rawFrom.startsWith("/\\") &&
+    !rawFrom.includes("://")
+      ? rawFrom
+      : "/admin";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

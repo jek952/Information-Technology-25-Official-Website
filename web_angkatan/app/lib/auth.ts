@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
 import { logSecurityEvent } from "@/app/lib/security-logger";
 
-const JWT_SECRET_STRING = process.env.JWT_SECRET || "proximiti-super-secure-jwt-secret-key-2026-production-token";
+const JWT_SECRET_STRING = process.env.JWT_SECRET || (process.env.NODE_ENV !== "production" ? "local-development-secret-key-proximiti-2026" : "");
 if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
-  console.warn("PERINGATAN KEAMANAN: JWT_SECRET belum diset di environment variables produksi. Menggunakan fallback secret sangat tidak disarankan.");
+  console.error("FATAL: JWT_SECRET belum dikonfigurasi di environment variables produksi.");
 }
 const SECRET_KEY = new TextEncoder().encode(JWT_SECRET_STRING);
 
@@ -21,6 +21,9 @@ export interface AdminPayload {
 }
 
 export async function createAdminToken(payload: AdminPayload): Promise<string> {
+  if (!JWT_SECRET_STRING) {
+    throw new Error("JWT_SECRET belum dikonfigurasi.");
+  }
   return await new jose.SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
@@ -30,6 +33,7 @@ export async function createAdminToken(payload: AdminPayload): Promise<string> {
 }
 
 export async function verifyAdminToken(token: string): Promise<AdminPayload | null> {
+  if (!JWT_SECRET_STRING) return null;
   try {
     const { payload } = await jose.jwtVerify(token, SECRET_KEY, {
       algorithms: ["HS256"],
@@ -111,7 +115,7 @@ export function setAuthCookie(res: NextResponse, token: string): void {
     value: token,
     httpOnly: true,
     secure: isProduction,
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/",
     maxAge: 8 * 60 * 60,
   });
@@ -123,7 +127,7 @@ export function clearAuthCookie(res: NextResponse): void {
     value: "",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/",
     maxAge: 0,
   });
