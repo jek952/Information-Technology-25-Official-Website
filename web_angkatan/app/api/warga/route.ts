@@ -88,10 +88,15 @@ export async function GET(req: NextRequest) {
     }
 
     const snapshot = await query.get();
-    const data = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const data = snapshot.docs.map((doc) => {
+      const docData = doc.data();
+      // Buang metadata internal seperti drive_id dari payload publik
+      const { drive_id, ...cleanData } = docData;
+      return {
+        id: doc.id,
+        ...cleanData,
+      };
+    });
 
     cacheStore.set(cacheKey, { data, timestamp: now });
 
