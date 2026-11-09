@@ -81,7 +81,8 @@ export async function checkSharedRateLimit(
     });
   } catch (error) {
     console.error(`[RATE LIMIT ERROR on ${action}]:`, error);
-    return { allowed: true, remaining: 1 };
+    // Fail-Closed: Jika database rate limit mengalami error/stall, tolak request demi keamanan
+    return { allowed: false, remaining: 0, resetInMinutes: 1 };
   }
 }
 
