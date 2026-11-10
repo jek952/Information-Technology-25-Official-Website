@@ -74,3 +74,110 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await verifyAdminSession(req);
+    if (!session.authenticated) {
+      return NextResponse.json(
+        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
+        { status: 401 }
+      );
+    }
+
+    const body = await req.json();
+    if (JSON.stringify(body).length > 10000) {
+      return NextResponse.json(
+        { success: false, error: "Ukuran data payload terlalu besar (maksimal 10 KB)." },
+        { status: 413 }
+      );
+    }
+
+    const { id, ...rest } = body;
+    if (!id || typeof id !== "string") {
+      return NextResponse.json(
+        { success: false, error: "ID dokumen diperlukan." },
+        { status: 400 }
+      );
+    }
+
+    const parsed = HallOfFameSchema.safeParse(rest);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { success: false, error: parsed.error.issues[0].message },
+        { status: 400 }
+      );
+    }
+
+    const docRef = db.collection("hall_of_fame").doc(id);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      return NextResponse.json(
+        { success: false, error: "Data Hall of Fame tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    await docRef.update({
+      ...parsed.data,
+      updated_at: new Date().toISOString(),
+    });
+
+    return NextResponse.json({
+      success: true,
+      id,
+      message: "Data Hall of Fame berhasil diperbarui.",
+    });
+  } catch (error) {
+    console.error("PUT hall-of-fame error:", error);
+    return NextResponse.json(
+      { success: false, error: "Gagal memperbarui data Hall of Fame." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await verifyAdminSession(req);
+    if (!session.authenticated) {
+      return NextResponse.json(
+        { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "ID dokumen diperlukan." },
+        { status: 400 }
+      );
+    }
+
+    const docRef = db.collection("hall_of_fame").doc(id);
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      return NextResponse.json(
+        { success: false, error: "Data Hall of Fame tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    await docRef.delete();
+
+    return NextResponse.json({
+      success: true,
+      id,
+      message: "Data Hall of Fame berhasil dihapus.",
+    });
+  } catch (error) {
+    console.error("DELETE hall-of-fame error:", error);
+    return NextResponse.json(
+      { success: false, error: "Gagal menghapus data Hall of Fame." },
+      { status: 500 }
+    );
+  }
+}

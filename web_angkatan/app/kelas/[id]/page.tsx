@@ -20,7 +20,7 @@ const Listkelas = () => {
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [banner, setBanner] = useState(
-    "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307752/proximiti-2026/galeri/proximiti/f1b4kso4lakrmnkykk5h.jpg"
+    "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307752/proximiti-2026/galeri/proximiti/f1b4kso4lakrmnkykk5h.jpg",
   );
   const [waldos, setWaldos] = useState<any>({
     nama: "Naran",
@@ -47,7 +47,9 @@ const Listkelas = () => {
       try {
         const [response, metaRes] = await Promise.all([
           fetch(`/api/warga?kelas=${encodeURIComponent(kelasON)}`),
-          fetch(`/api/kelas?kelas=${encodeURIComponent(kelasON)}`).catch(() => null),
+          fetch(`/api/kelas?kelas=${encodeURIComponent(kelasON)}`).catch(
+            () => null,
+          ),
         ]);
 
         if (metaRes && metaRes.ok) {
@@ -122,7 +124,10 @@ const Listkelas = () => {
           <div className="flex items-center justify-between">
             <button
               onClick={() => {
-                if (typeof window !== "undefined" && window.history.length > 1) {
+                if (
+                  typeof window !== "undefined" &&
+                  window.history.length > 1
+                ) {
                   router.back();
                 } else {
                   router.push("/struktur");
@@ -157,9 +162,8 @@ const Listkelas = () => {
               </h1>
               <Card
                 nama={waldos.nama}
-                email={waldos.email}
                 github={waldos.github}
-                insgaram={waldos.instagram}
+                instagram={waldos.instagram}
                 linkedin={waldos.linkedin}
                 foto={waldos.foto}
                 kelas={waldos.kelas || `Waldos ${kelasON}`}
@@ -170,9 +174,8 @@ const Listkelas = () => {
               <h1 className="text-2xl font-bold text-center">Ketua kelas</h1>
               <Card
                 nama={ketuaKelas.nama}
-                email={ketuaKelas.email}
                 github={ketuaKelas.github}
-                insgaram={ketuaKelas.instagram}
+                instagram={ketuaKelas.instagram}
                 linkedin={ketuaKelas.linkedin}
                 foto={ketuaKelas.foto}
                 kelas={ketuaKelas.kelas || kelasON}
@@ -198,10 +201,9 @@ const Listkelas = () => {
                   foto={user.foto}
                   nama={user.nama || user.nama_lengkap || user.name}
                   kelas={user.kelas}
-                  email={user.email}
                   github={user.github}
                   linkedin={user.linkedin}
-                  insgaram={user.instagram}
+                  instagram={user.instagram}
                 />
               ))}
             </div>

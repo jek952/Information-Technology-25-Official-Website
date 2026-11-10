@@ -1,30 +1,23 @@
 [
   {
     "id": 1,
-    "nama": "Andi Pratama",
-    "penghargaan": "Best Team Leader",
+    "nama": "Kgs Muhammad Fathurrohman Fazriansyah",
+    "penghargaan": "ITN  OPEN X 2026",
     "deskripsi": "Penghargaan diberikan atas kepemimpinan dan kontribusi dalam mengkoordinasikan tim selama kegiatan angkatan.",
     "foto": "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307732/proximiti-2026/halloffame/khxg9rrrrcebwqis04yv.jpg"
   },
   {
     "id": 2,
-    "nama": "Siti Aulia",
-    "penghargaan": "Most Creative Person",
+    "nama": "MUHAMMAD AKSAY HARPANDI ILHAM PRATAMA",
+    "penghargaan": "MPMCC 2026",
     "deskripsi": "Penghargaan diberikan atas kreativitas dan ide-ide inovatif yang memberikan kontribusi positif bagi angkatan.",
     "foto": "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307734/proximiti-2026/halloffame/iihmvpnwncghfckjilju.jpg"
   },
   {
     "id": 3,
-    "nama": "Budi Santoso",
-    "penghargaan": "Best Achievement",
+    "nama": "Assyauqi",
+    "penghargaan": "Bandung Tv Archery competition tingkat provinsi Jawa Barat",
     "deskripsi": "Penghargaan diberikan atas pencapaian dan prestasi yang membanggakan serta membawa nama baik angkatan.",
     "foto": "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307736/proximiti-2026/halloffame/kc7qj04cdwcmb9hkw9qc.jpg"
-  },
-  {
-    "id": 4,
-    "nama": "Jason momoa",
-    "penghargaan": "Most Inspiring Person",
-    "deskripsi": "Penghargaan diberikan atas semangat, dedikasi, dan sikap positif yang menjadi inspirasi bagi teman-teman di angkatan.",
-    "foto": "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307737/proximiti-2026/halloffame/y1wtulktzdzouam0oo4s.jpg"
   }
 ]

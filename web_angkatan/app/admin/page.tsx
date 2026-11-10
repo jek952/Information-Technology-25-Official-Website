@@ -38,6 +38,8 @@ import {
   faCalendarDays,
   faBuilding,
   faFilter,
+  faTrophy,
+  faMedal,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Dynamic import agar tidak error SSR
@@ -177,6 +179,7 @@ export default function AdminInfo() {
     | "editInfoCover"
     | "tambahInfoCover"
     | "galeriFoto"
+    | "hofFoto"
   >("modalWarga");
   const [tambahWargaPreview, setTambahWargaPreview] = useState<string | null>(
     null,
@@ -197,6 +200,164 @@ export default function AdminInfo() {
     null,
   );
   const [galeriUploading, setGaleriUploading] = useState(false);
+
+  const [hofList, setHofList] = useState<any[]>([]);
+  const [hofLoading, setHofLoading] = useState(false);
+  const [hofSearch, setHofSearch] = useState("");
+  const [isHofModalOpen, setIsHofModalOpen] = useState(false);
+  const [hofModalMode, setHofModalMode] = useState<"add" | "edit">("add");
+  const [hofSaving, setHofSaving] = useState(false);
+  const [hofForm, setHofForm] = useState({
+    id: "",
+    nama: "",
+    penghargaan: "",
+    deskripsi: "",
+    foto: "",
+  });
+  const [hofPhotoFile, setHofPhotoFile] = useState<File | null>(null);
+  const [hofPhotoPreview, setHofPhotoPreview] = useState<string | null>(null);
+
+  const fetchHallOfFame = async () => {
+    setHofLoading(true);
+    try {
+      const res = await fetch("/api/hall-of-fame");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setHofList(json.data);
+      }
+    } catch (err) {
+      console.error("Gagal memuat data Hall of Fame:", err);
+    } finally {
+      setHofLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (active === "Kelola Hall of Fame") {
+      fetchHallOfFame();
+    }
+  }, [active]);
+
+  const openAddHofModal = () => {
+    setHofModalMode("add");
+    setHofForm({
+      id: "",
+      nama: "",
+      penghargaan: "",
+      deskripsi: "",
+      foto: "",
+    });
+    setHofPhotoFile(null);
+    setHofPhotoPreview(null);
+    setIsHofModalOpen(true);
+  };
+
+  const openEditHofModal = (item: any) => {
+    setHofModalMode("edit");
+    setHofForm({
+      id: item.id || "",
+      nama: item.nama || "",
+      penghargaan: item.penghargaan || "",
+      deskripsi: item.deskripsi || "",
+      foto: item.foto || "",
+    });
+    setHofPhotoFile(null);
+    setHofPhotoPreview(item.foto || null);
+    setIsHofModalOpen(true);
+  };
+
+  const handleSaveHofModal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!hofForm.nama.trim()) {
+      toast.error("Nama wajib diisi.");
+      return;
+    }
+    if (!hofForm.penghargaan.trim()) {
+      toast.error("Nama penghargaan wajib diisi.");
+      return;
+    }
+    if (!hofForm.deskripsi.trim()) {
+      toast.error("Deskripsi wajib diisi.");
+      return;
+    }
+    if (hofModalMode === "add" && !hofPhotoFile && !hofForm.foto) {
+      toast.error("Foto wajib dipilih.");
+      return;
+    }
+
+    setHofSaving(true);
+    try {
+      let finalFoto = hofForm.foto;
+      if (hofPhotoFile) {
+        const fd = new FormData();
+        fd.append("file", hofPhotoFile);
+        fd.append("folder", "halloffame");
+        const upRes = await fetch("/api/upload", {
+          method: "POST",
+          body: fd,
+        });
+        const upJson = await upRes.json();
+        if (!upRes.ok || !upJson.url) {
+          throw new Error(upJson.error || "Gagal mengunggah foto.");
+        }
+        finalFoto = upJson.url;
+      }
+
+      const payload = {
+        nama: hofForm.nama,
+        penghargaan: hofForm.penghargaan,
+        deskripsi: hofForm.deskripsi,
+        foto: finalFoto,
+      };
+
+      const res = await fetch("/api/hall-of-fame", {
+        method: hofModalMode === "add" ? "POST" : "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          hofModalMode === "add" ? payload : { id: hofForm.id, ...payload },
+        ),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Gagal menyimpan data Hall of Fame.");
+      }
+
+      toast.success(
+        hofModalMode === "add"
+          ? "Data Hall of Fame berhasil ditambahkan."
+          : "Data Hall of Fame berhasil diperbarui.",
+      );
+      setIsHofModalOpen(false);
+      fetchHallOfFame();
+      fetchDashboardData();
+    } catch (err: any) {
+      toast.error(err.message || "Terjadi kesalahan.");
+    } finally {
+      setHofSaving(false);
+    }
+  };
+
+  const handleDeleteHof = async (id: string, nama: string) => {
+    if (!confirm(`Yakin ingin menghapus "${nama}" dari Hall of Fame?`)) return;
+    try {
+      const res = await fetch(
+        `/api/hall-of-fame?id=${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+        },
+      );
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Gagal menghapus data Hall of Fame.");
+      }
+      toast.success(`"${nama}" berhasil dihapus dari Hall of Fame.`);
+      setHofList((prev) => prev.filter((item) => item.id !== id));
+      fetchDashboardData();
+    } catch (err: any) {
+      toast.error(err.message || "Gagal menghapus data.");
+    }
+  };
 
   const fetchAdminGaleri = async () => {
     setAdminGaleriLoading(true);
@@ -476,6 +637,9 @@ export default function AdminInfo() {
     } else if (cropTarget === "galeriFoto") {
       setGaleriUploadFile(croppedFile);
       setGaleriUploadPreview(previewUrl);
+    } else if (cropTarget === "hofFoto") {
+      setHofPhotoFile(croppedFile);
+      setHofPhotoPreview(previewUrl);
     }
   };
 
@@ -700,6 +864,11 @@ export default function AdminInfo() {
       nama: "Galeri Foto",
       icon: faImages,
       submenu: ["Kelola Galeri", "Upload Foto Galeri"],
+    },
+    {
+      nama: "Hall of Fame",
+      icon: faTrophy,
+      submenu: ["Kelola Hall of Fame", "Tambah Hall of Fame"],
     },
   ];
   const [createWarga, setCreatewarga] = useState({
@@ -2734,6 +2903,377 @@ export default function AdminInfo() {
               </form>
             </div>
           )}
+
+          {active === "Kelola Hall of Fame" &&
+            (() => {
+              const filteredHof = hofList.filter(
+                (item) =>
+                  !hofSearch ||
+                  item.nama?.toLowerCase().includes(hofSearch.toLowerCase()) ||
+                  item.penghargaan
+                    ?.toLowerCase()
+                    .includes(hofSearch.toLowerCase()),
+              );
+
+              return (
+                <div className="w-full max-w-5xl space-y-6">
+                  {/* Header Card */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                    <div>
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        Kelola Hall of Fame
+                      </h1>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Daftar mahasiswa berprestasi yang mendapatkan
+                        penghargaan dan pencapaian.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={fetchHallOfFame}
+                        disabled={hofLoading}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded-xl border border-gray-300 transition cursor-pointer"
+                      >
+                        <FontAwesomeIcon
+                          icon={faArrowRotateRight}
+                          className={hofLoading ? "animate-spin" : ""}
+                        />
+                        <span>Muat Ulang</span>
+                      </button>
+                      <button
+                        onClick={openAddHofModal}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-hijauhunter hover:bg-hijaugelap text-white text-xs font-semibold rounded-xl transition shadow-sm cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                        <span>Tambah Baru</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Search */}
+                  <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                      <h2 className="text-base font-bold text-gray-900">
+                        Daftar Prestasi
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        Menampilkan {filteredHof.length} dari {hofList.length}{" "}
+                        data.
+                      </p>
+                    </div>
+                    <div className="relative">
+                      <FontAwesomeIcon
+                        icon={faMagnifyingGlass}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
+                      />
+                      <input
+                        type="text"
+                        value={hofSearch}
+                        onChange={(e) => setHofSearch(e.target.value)}
+                        placeholder="Cari nama atau penghargaan..."
+                        className="pl-8 pr-3 py-1.5 text-xs rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter w-48 sm:w-60"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cards */}
+                  {hofLoading ? (
+                    <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center text-xs text-gray-400">
+                      Memuat data Hall of Fame...
+                    </div>
+                  ) : filteredHof.length === 0 ? (
+                    <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center text-gray-400">
+                      <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-lg">
+                        <FontAwesomeIcon icon={faTrophy} />
+                      </div>
+                      <p className="text-xs font-semibold text-gray-700">
+                        {hofSearch
+                          ? "Tidak ada data yang cocok dengan pencarian."
+                          : "Belum ada data Hall of Fame."}
+                      </p>
+                      <button
+                        onClick={openAddHofModal}
+                        className="mt-3 text-xs px-3.5 py-1.5 rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white font-semibold transition cursor-pointer"
+                      >
+                        + Tambah Data Pertama
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredHof.map((item) => (
+                        <div
+                          key={item.id}
+                          className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm hover:border-gray-300 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                        >
+                          <div className="flex items-start gap-4 min-w-0">
+                            <img
+                              src={item.foto || "/logo-proximiti.png"}
+                              alt={item.nama}
+                              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover border border-gray-200 shrink-0 bg-gray-100"
+                            />
+                            <div className="min-w-0 space-y-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-amber-50 text-amber-800 border-amber-200 flex items-center gap-1">
+                                  <FontAwesomeIcon
+                                    icon={faMedal}
+                                    className="text-[9px]"
+                                  />
+                                  Hall of Fame
+                                </span>
+                              </div>
+                              <h3 className="text-sm sm:text-base font-bold text-gray-900 truncate">
+                                {item.nama}
+                              </h3>
+                              <p className="text-xs text-amber-700 font-semibold truncate flex items-center gap-1.5">
+                                <FontAwesomeIcon
+                                  icon={faTrophy}
+                                  className="text-[10px] text-amber-500"
+                                />
+                                <span>{item.penghargaan}</span>
+                              </p>
+                              <p className="text-xs text-gray-500 line-clamp-2">
+                                {item.deskripsi}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                            <button
+                              onClick={() => openEditHofModal(item)}
+                              className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer flex items-center gap-1.5"
+                            >
+                              <FontAwesomeIcon icon={faPenToSquare} />
+                              <span>Edit</span>
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeleteHof(item.id, item.nama)
+                              }
+                              className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-red-50 hover:bg-red-100 text-red-600 transition cursor-pointer flex items-center gap-1.5"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                              <span>Hapus</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+          {active === "Tambah Hall of Fame" && (
+            <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-6">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      Tambah Data Hall of Fame
+                    </h2>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Masukkan data mahasiswa berprestasi untuk ditampilkan di
+                      Hall of Fame.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActive("Kelola Hall of Fame")}
+                  className="text-xs px-3 py-1.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 font-semibold transition cursor-pointer"
+                >
+                  Lihat Semua
+                </button>
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!hofPhotoFile && !hofForm.foto) {
+                    toast.error(
+                      "Foto wajib dipilih dan disesuaikan terlebih dahulu.",
+                    );
+                    return;
+                  }
+
+                  setHofSaving(true);
+                  (async () => {
+                    try {
+                      let finalFoto = hofForm.foto;
+                      if (hofPhotoFile) {
+                        const fd = new FormData();
+                        fd.append("file", hofPhotoFile);
+                        fd.append("folder", "halloffame");
+                        const upRes = await fetch("/api/upload", {
+                          method: "POST",
+                          body: fd,
+                        });
+                        const upJson = await upRes.json();
+                        if (!upRes.ok || !upJson.url) {
+                          throw new Error(
+                            upJson.error || "Gagal mengunggah foto.",
+                          );
+                        }
+                        finalFoto = upJson.url;
+                      }
+
+                      const res = await fetch("/api/hall-of-fame", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          nama: hofForm.nama,
+                          penghargaan: hofForm.penghargaan,
+                          deskripsi: hofForm.deskripsi,
+                          foto: finalFoto,
+                        }),
+                      });
+                      const json = await res.json();
+                      if (!res.ok || !json.success) {
+                        throw new Error(
+                          json.error || "Gagal menyimpan data Hall of Fame.",
+                        );
+                      }
+
+                      toast.success("Data Hall of Fame berhasil ditambahkan!");
+                      setHofForm({
+                        id: "",
+                        nama: "",
+                        penghargaan: "",
+                        deskripsi: "",
+                        foto: "",
+                      });
+                      setHofPhotoFile(null);
+                      setHofPhotoPreview(null);
+                      fetchDashboardData();
+                    } catch (err: any) {
+                      toast.error(err.message || "Terjadi kesalahan.");
+                    } finally {
+                      setHofSaving(false);
+                    }
+                  })();
+                }}
+                className="space-y-5 text-xs"
+              >
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1.5">
+                    Nama Lengkap *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    minLength={2}
+                    value={hofForm.nama}
+                    onChange={(e) =>
+                      setHofForm({ ...hofForm, nama: e.target.value })
+                    }
+                    placeholder="Masukkan nama mahasiswa berprestasi"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-hijauterang focus:border-hijauterang outline-none transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1.5">
+                    Nama Penghargaan *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    minLength={2}
+                    value={hofForm.penghargaan}
+                    onChange={(e) =>
+                      setHofForm({ ...hofForm, penghargaan: e.target.value })
+                    }
+                    placeholder="Misal: Juara 1 Hackathon Nasional 2026"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-hijauterang focus:border-hijauterang outline-none transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1.5">
+                    Deskripsi Prestasi *
+                  </label>
+                  <textarea
+                    required
+                    minLength={5}
+                    value={hofForm.deskripsi}
+                    onChange={(e) =>
+                      setHofForm({ ...hofForm, deskripsi: e.target.value })
+                    }
+                    placeholder="Deskripsi singkat tentang penghargaan dan pencapaian yang diraih..."
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-hijauterang focus:border-hijauterang outline-none transition resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1.5">
+                    Foto *
+                  </label>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    {hofPhotoPreview ? (
+                      <img
+                        src={hofPhotoPreview}
+                        alt="Preview Foto"
+                        className="w-20 h-20 rounded-xl object-cover border-2 border-amber-500/40 bg-gray-100 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 shrink-0 bg-gray-50">
+                        <FontAwesomeIcon
+                          icon={faCamera}
+                          className="text-xl mb-1 text-gray-300"
+                        />
+                        <span className="text-[10px]">Belum ada</span>
+                      </div>
+                    )}
+                    <div className="flex-1 space-y-2">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setCropperRawSrc(URL.createObjectURL(file));
+                            setCropperShape("rect");
+                            setCropperAspect(1);
+                            setCropperTitle("Sesuaikan Foto Hall of Fame");
+                            setCropperSubtitle(
+                              "Geser dan atur area foto profil mahasiswa berprestasi.",
+                            );
+                            setCropTarget("hofFoto");
+                            setIsCropperOpen(true);
+                            e.target.value = "";
+                          }
+                        }}
+                        className="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer"
+                      />
+                      <p className="text-[11px] text-gray-400">
+                        Format JPG, PNG, atau WebP. Foto otomatis disesuaikan
+                        dan dikompresi.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => setActive("Kelola Hall of Fame")}
+                    className="px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 font-semibold transition cursor-pointer"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={hofSaving}
+                    className="px-6 py-2.5 rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white font-semibold transition cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                  >
+                    <span>
+                      {hofSaving ? "Menyimpan..." : "Simpan ke Hall of Fame"}
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
@@ -3144,6 +3684,148 @@ export default function AdminInfo() {
                     ? "Menyimpan..."
                     : infoModalMode === "add"
                       ? "Publikasikan"
+                      : "Simpan Perubahan"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isHofModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {hofModalMode === "add"
+                    ? "Tambah Hall of Fame"
+                    : "Edit Data Hall of Fame"}
+                </h3>
+                <p className="text-xs text-gray-500">
+                  {hofModalMode === "add"
+                    ? "Tambahkan data mahasiswa berprestasi baru."
+                    : "Perubahan data akan langsung disimpan ke database Firestore."}
+                </p>
+              </div>
+              <button
+                onClick={() => setIsHofModalOpen(false)}
+                className="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center cursor-pointer transition"
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            </div>
+
+            <form
+              onSubmit={handleSaveHofModal}
+              className="p-6 space-y-4 text-xs"
+            >
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Nama Lengkap *
+                </label>
+                <input
+                  type="text"
+                  required
+                  minLength={2}
+                  value={hofForm.nama}
+                  onChange={(e) =>
+                    setHofForm({ ...hofForm, nama: e.target.value })
+                  }
+                  placeholder="Masukkan nama lengkap"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Nama Penghargaan *
+                </label>
+                <input
+                  type="text"
+                  required
+                  minLength={2}
+                  value={hofForm.penghargaan}
+                  onChange={(e) =>
+                    setHofForm({ ...hofForm, penghargaan: e.target.value })
+                  }
+                  placeholder="Misal: Juara 1 Hackathon Nasional 2026"
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Deskripsi Prestasi *
+                </label>
+                <textarea
+                  required
+                  minLength={5}
+                  value={hofForm.deskripsi}
+                  onChange={(e) =>
+                    setHofForm({ ...hofForm, deskripsi: e.target.value })
+                  }
+                  placeholder="Deskripsi singkat tentang penghargaan..."
+                  rows={3}
+                  className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-hijauhunter/20 focus:border-hijauhunter resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">
+                  Foto{" "}
+                  {hofModalMode === "add"
+                    ? "*"
+                    : "(Opsional jika ingin mengganti)"}
+                </label>
+                <div className="flex items-center gap-3">
+                  {(hofPhotoPreview || hofForm.foto) && (
+                    <img
+                      src={hofPhotoPreview || hofForm.foto}
+                      alt="Preview"
+                      className="w-14 h-14 rounded-xl object-cover border-2 border-gray-200 shrink-0"
+                    />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setCropperRawSrc(URL.createObjectURL(file));
+                        setCropperShape("rect");
+                        setCropperAspect(1);
+                        setCropperTitle("Sesuaikan Foto Hall of Fame");
+                        setCropperSubtitle(
+                          "Geser dan atur area foto mahasiswa berprestasi.",
+                        );
+                        setCropTarget("hofFoto");
+                        setIsCropperOpen(true);
+                        e.target.value = "";
+                      }
+                    }}
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gray-100 hover:file:bg-gray-200 cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setIsHofModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition font-semibold cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={hofSaving}
+                  className="px-5 py-2 rounded-xl bg-hijauhunter hover:bg-hijaugelap text-white font-semibold transition cursor-pointer disabled:opacity-50"
+                >
+                  {hofSaving
+                    ? "Menyimpan..."
+                    : hofModalMode === "add"
+                      ? "Tambahkan"
                       : "Simpan Perubahan"}
                 </button>
               </div>

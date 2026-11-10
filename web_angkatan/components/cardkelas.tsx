@@ -7,10 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /* eslint-disable @next/next/no-img-element */
 type CardProps = {
   nama: string;
-  email: string;
   github: string;
   linkedin: string;
-  insgaram: string;
+  instagram: string;
   kelas: string;
   foto: string;
   variant?: "anggota" | "waldos";
@@ -28,17 +27,16 @@ function safeSocialLink(url?: string): string | null {
 export default function Card({
   foto,
   nama,
-  email,
   github,
   linkedin,
   kelas,
-  insgaram,
+  instagram,
   variant,
   ...props
 }: CardProps) {
   const safeGithub = safeSocialLink(github);
   const safeLinkedin = safeSocialLink(linkedin);
-  const safeInstagram = safeSocialLink(insgaram);
+  const safeInstagram = safeSocialLink(instagram);
 
   return (
     <div
@@ -65,10 +63,6 @@ export default function Card({
         >
           <span className="line-clamp-2">{nama}</span>
         </h2>
-
-        <p className="mt-2 h-10 break-all text-center text-sm text-gray-600">
-          {email}
-        </p>
 
         <p className="mt-1 text-center text-xs text-gray-400">{kelas}</p>
       </div>
