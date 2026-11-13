@@ -56,7 +56,7 @@ export default function Footer() {
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
               <img
-                src="/logo-proximiti.png"
+                src="/logo-akt.png"
                 alt="Logo IT 25"
                 className="w-12 h-12 object-contain shrink-0"
               />

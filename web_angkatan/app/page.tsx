@@ -26,7 +26,9 @@ import Link from "next/link";
 
 export default function Home() {
   const [isLogo, setIslogo] = useState(true);
-  const [activeGaleriTab, setActiveGaleriTab] = useState<"proximiti" | "megabit" | "ultras">("proximiti");
+  const [activeGaleriTab, setActiveGaleriTab] = useState<
+    "proximiti" | "megabit" | "ultras"
+  >("proximiti");
   const [proximitiList, setProximitiList] = useState(proximiti);
   const [megabitList, setMegabitList] = useState(megabit);
   const [ultrasList, setUltrasList] = useState(ultras);
@@ -48,30 +50,39 @@ export default function Home() {
   }, [hallOfFameList]);
 
   useEffect(() => {
-
     fetch("/api/galeri?kategori=proximiti")
       .then((r) => r.json())
-      .then((r) => { if (r.success && r.data?.length) setProximitiList(r.data); })
+      .then((r) => {
+        if (r.success && r.data?.length) setProximitiList(r.data);
+      })
       .catch(() => {});
 
     fetch("/api/galeri?kategori=megabit")
       .then((r) => r.json())
-      .then((r) => { if (r.success && r.data?.length) setMegabitList(r.data); })
+      .then((r) => {
+        if (r.success && r.data?.length) setMegabitList(r.data);
+      })
       .catch(() => {});
 
     fetch("/api/galeri?kategori=ultras")
       .then((r) => r.json())
-      .then((r) => { if (r.success && r.data?.length) setUltrasList(r.data); })
+      .then((r) => {
+        if (r.success && r.data?.length) setUltrasList(r.data);
+      })
       .catch(() => {});
 
     fetch("/api/hall-of-fame")
       .then((r) => r.json())
-      .then((r) => { if (r.success && r.data?.length) setHallOfFameList(r.data); })
+      .then((r) => {
+        if (r.success && r.data?.length) setHallOfFameList(r.data);
+      })
       .catch(() => {});
 
     fetch("/api/information")
       .then((r) => r.json())
-      .then((r) => { if (r.success && r.data?.length) setInfoList(r.data.slice(0, 3)); })
+      .then((r) => {
+        if (r.success && r.data?.length) setInfoList(r.data.slice(0, 3));
+      })
       .catch(() => {});
   }, []);
   return (
@@ -79,30 +90,30 @@ export default function Home() {
       <Header />
 
       <main className="md:px-0">
-        
         <section className="relative flex flex-col px-3 md:px-0 py-10 items-center justify-center md:w-1/2 mx-auto">
           <div
             onMouseEnter={() => setIslogo(false)}
             onMouseLeave={() => setIslogo(true)}
           >
             <img
-              src="/logo-proximiti.png"
-              alt=""
-              className="w-32 h-32 transition-all duration-500 ease-in-out hover:scale-110"
+              src="/logo-akt.png"
+              alt="logo"
+              className="w-36 h-36 transition-all duration-500 ease-in-out hover:scale-110"
             />
           </div>
           <span className="min-h-62.5 block w-full pt-4 text-center">
             {isLogo ? (
               <div>
                 <h1 className="font-semibold text-4xl pb-5 md:text-5xl">
-                  One Team, One Vision, IT In Action
+                  Concordia Fratrum, Lux in Futuri
                 </h1>
                 <p className="text-base sm:text-md">
-                  Angkatan 25 adalshasjdlajesf Lorem ipsum dolor sit amet
-                  consectetur adipisicing elit. Harum quo, illum quod
-                  accusantium ratione maiores cupiditate, perferendis eos nulla
-                  in aut velit eum. Porro necessitatibus in corporis ullam
-                  excepturi eius.
+                  Menjadi prinsip bahwa persaudaraan dan persatuan adalah
+                  fondasi untuk membangun masa depan bersama. Velkarys bukan
+                  sekadar nama atau lambang sebuah angkatan, melainkan
+                  representasi dari sebuah ikatan yang dibangun melalui
+                  keberanian, diperkuat oleh persaudaraan, dan diarahkan oleh
+                  visi yang sama.
                 </p>
               </div>
             ) : (
@@ -111,10 +122,16 @@ export default function Home() {
                   Makna Logo Angkatan
                 </h1>
                 <p className="text-base sm:text-md">
-                  Makna adalshasjdlajesf Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Harum quo, illum quod accusantium ratione
-                  maiores cupiditate, perferendis eos nulla in aut velit eum.
-                  Porro necessitatibus in corporis ullam excdasdsaepturi eius.
+                  Naga melambangkan kekuatan, keberanian, dan semangat Angkatan
+                  25 untuk terus melangkah menghadapi berbagai rintangan. Sayap
+                  naga yang membentang menggambarkan persatuan seluruh anggota
+                  dari latar belakang berbeda dengan satu tujuan untuk tumbuh
+                  bersama menuju masa depan yang cerah. Perisai menjadi simbol
+                  perlindungan dan kekeluargaan, yaitu sikap saling menjaga,
+                  melindungi, dan menguatkan satu sama lain. Sementara itu,
+                  lingkaran melambangkan ikatan yang tidak terputus dan bintang
+                  menggambarkan arah, visi, serta harapan Angkatan 25 dalam
+                  menjalani perjalanan panjangnya.
                 </p>
               </div>
             )}
@@ -126,7 +143,7 @@ export default function Home() {
               <h2 className="font-semibold text-lg md:text-xl">Kelas</h2>
             </span>
             <span className="text-center">
-              <Counter total={223} />
+              <Counter total={228} />
               <h2 className="font-semibold text-lg md:text-xl">
                 Mahasiswa Aktif
               </h2>
@@ -154,19 +171,19 @@ export default function Home() {
             <span className="md:w-1/2 text-center">
               <h1 className="font-semibold text-4xl pb-5 md:text-5xl">VISI</h1>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum,
-                temporibus! Blanditiis laboriosam quidem exercitationem aperiam,
-                debitis qui delectus numquam! Molestiae, consequuntur libero?
-                Cumque magnam nobis culpa eaque. Ipsa, ad quaerat.
+                Membangun angkatan 25 Teknologi Informasi yang kompak,
+                komunikatif, dan saling membantu, serta tumbuh bersama selama
+                menjalani perjalanan di Prodi Teknologi Informasi, juga menjadi
+                jembatan komunikasi dan informasi antar angkatan.
               </p>
             </span>
             <span className="md:w-1/2 text-center">
               <h1 className="font-semibold text-4xl pb-5 md:text-5xl">MISI</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum,
-                temporibus! Blanditiis laboriosam quidem exercitationem aperiam,
-                debitis qui delectus numquam! Molestiae, consequuntur libero?
-                Cumque magnam nobis culpa eaque. Ipsa, ad quaerat.
+              <p className="whitespace-pre-line">
+                {`1. Komunikasi terbuka dan aktif Informasi jelas dan jalur aspirasi yang mudah diakses.
+                2. Budaya saling membantu Forum belajar bersama dan berbagi materi antar teman seangkatan.
+                3. Kekompakan lintas kelas Kegiatan kebersamaan yang melibatkan seluruh kelas angkatan.
+                4. Penghubung yang responsif Menyambungkan angkatan secara transparan.`}
               </p>
             </span>
           </div>
@@ -179,7 +196,8 @@ export default function Home() {
               Galeri Kami
             </h2>
             <p className="text-sm sm:text-base text-gray-500">
-              Dokumentasi dan rekam jejak kegiatan mahasiswa S1 Teknologi Informasi Angkatan 2025
+              Dokumentasi dan rekam jejak kegiatan mahasiswa S1 Teknologi
+              Informasi Angkatan 2025
             </p>
           </div>
 
@@ -191,14 +209,14 @@ export default function Home() {
                 tab === "proximiti"
                   ? "Proximiti"
                   : tab === "megabit"
-                  ? "Megabit"
-                  : "Ultras TI";
+                    ? "Megabit"
+                    : "Ultras TI";
               const count =
                 tab === "proximiti"
                   ? proximitiList.length
                   : tab === "megabit"
-                  ? megabitList.length
-                  : ultrasList.length;
+                    ? megabitList.length
+                    : ultrasList.length;
 
               return (
                 <button
@@ -213,7 +231,9 @@ export default function Home() {
                   <span>{label}</span>
                   <span
                     className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                      isActive ? "bg-white/20 text-white" : "bg-gray-200 text-gray-600"
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-gray-200 text-gray-600"
                     }`}
                   >
                     {count}
@@ -229,8 +249,8 @@ export default function Home() {
               {(activeGaleriTab === "proximiti"
                 ? proximitiList
                 : activeGaleriTab === "megabit"
-                ? megabitList
-                : ultrasList
+                  ? megabitList
+                  : ultrasList
               )
                 .slice(0, 8)
                 .map((item: any, idx: number) => (
@@ -287,8 +307,12 @@ export default function Home() {
         {/* === INFORMATION HUB PREVIEW === */}
         <section className="max-w-[1400px] mx-auto flex justify-center items-center flex-col gap-6 py-16">
           <span className="text-center">
-            <h1 className="font-semibold text-4xl pb-3 md:text-5xl">Information Hub</h1>
-            <p className="text-gray-500">Event, beasiswa, dan info terbaru untuk warga angkatan</p>
+            <h1 className="font-semibold text-4xl pb-3 md:text-5xl">
+              Information Hub
+            </h1>
+            <p className="text-gray-500">
+              Event, beasiswa, dan info terbaru untuk warga angkatan
+            </p>
           </span>
 
           {/* Grid: 3 kolom desktop, 1 kolom mobile */}
@@ -316,7 +340,9 @@ export default function Home() {
                     {item.title}
                   </h3>
                   <p className="text-sm text-gray-500 mb-2">{item.organizer}</p>
-                  <p className="text-sm text-gray-400 line-clamp-2 flex-grow">{item.excerpt}</p>
+                  <p className="text-sm text-gray-400 line-clamp-2 flex-grow">
+                    {item.excerpt}
+                  </p>
                 </div>
               </a>
             ))}
@@ -344,7 +370,9 @@ export default function Home() {
               onSwiper={setSwiperInstance}
               onSlideChange={(swiper) => {
                 if (hallOfFameList.length > 0) {
-                  setHallOfFameActiveIndex(swiper.realIndex % hallOfFameList.length);
+                  setHallOfFameActiveIndex(
+                    swiper.realIndex % hallOfFameList.length,
+                  );
                 }
               }}
               effect="coverflow"
@@ -406,7 +434,8 @@ export default function Home() {
                     type="button"
                     onClick={() => {
                       if (!swiperInstance) return;
-                      const currentMod = swiperInstance.realIndex % hallOfFameList.length;
+                      const currentMod =
+                        swiperInstance.realIndex % hallOfFameList.length;
                       let diff = i - currentMod;
                       // cari rute rotasi terdekat (maju atau mundur)
                       if (diff > hallOfFameList.length / 2) {

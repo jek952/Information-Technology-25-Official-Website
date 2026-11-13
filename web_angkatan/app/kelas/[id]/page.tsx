@@ -32,12 +32,11 @@ const Listkelas = () => {
     kelas: `Waldos ${kelasON}`,
   });
   const [ketuaKelas, setKetuaKelas] = useState<any>({
-    nama: "Ara",
-    email: "ara@example.com",
+    nama: "example",
     github: "https://github.com/ara",
     instagram: "https://instagram.com/ara",
     linkedin: "https://linkedin.com/in/ara",
-    foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307750/proximiti-2026/warga/lhqlrgaukm2430s4iujh.jpg",
+    foto: "https://i.ibb.co.com/mCMyHxRV/user-dummy.jpg",
     kelas: kelasON,
   });
 
@@ -95,12 +94,11 @@ const Listkelas = () => {
           setKetuaKelas(foundKetua);
         } else {
           setKetuaKelas({
-            nama: "Ara",
-            email: "ara@example.com",
+            nama: "example",
             github: "https://github.com/ara",
             instagram: "https://instagram.com/ara",
-            linkedin: "https://linkedin.com/in/ara",
-            foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791307750/proximiti-2026/warga/lhqlrgaukm2430s4iujh.jpg",
+            linkedin: "",
+            foto: "https://i.ibb.co.com/mCMyHxRV/user-dummy.jpg",
             kelas: kelasON,
           });
         }

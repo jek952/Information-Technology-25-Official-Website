@@ -21,11 +21,11 @@ export default function Header() {
           className="flex items-center cursor-pointer justify-center gap-2"
         >
           <img
-            src="/logo-proximiti.png"
-            alt="Logo Proximiti"
+            src="/logo-akt.png"
+            alt="Logo akt"
             className="w-12 h-12 md:w-16 md:h-16"
           />
-          <p className="text-xl text-[#5f6368] font-bold">IT 25</p>
+          <p className="text-xl text-[#5f6368] font-bold">VELKARYS</p>
         </div>
         <div
           className="block md:hidden cursor-pointer p-2"

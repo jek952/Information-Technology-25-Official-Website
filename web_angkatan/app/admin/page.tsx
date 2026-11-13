@@ -1317,7 +1317,7 @@ export default function AdminInfo() {
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             <img
-                              src={w.foto || "/logo-proximiti.png"}
+                              src={w.foto || "/logo-akt.png"}
                               alt={w.nama}
                               className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
                             />

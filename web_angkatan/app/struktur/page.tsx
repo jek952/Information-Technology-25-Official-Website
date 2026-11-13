@@ -14,12 +14,10 @@ export default function Struktur() {
     jabatan: "KETUA ANGKATAN",
     nama: "Muhammad Reivan Maulana",
     kelas: "IT-49-02",
-    foto: "https://res.cloudinary.com/hvnrszvj/image/upload/v1791309130/proximiti-2026/struktur/ketua_angkatan.webp",
+    foto: "",
     visi: "Membangun Angkatan 25 Teknologi Informasi yang kompak, komunikatif, dan saling membantu, serta tumbuh bersama selama menjalani perjalanan di Prodi Teknologi Informasi, juga menjadi jembatan komunikasi dan informasi antar angkatan.",
     misi: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi ipsum doloremque repellat architecto ducimus? Voluptates, quae rem tempora ad quam, nulla eius amet eos id perferendis ab ea mollitia non!",
   });
-
-  const [km, Setkm] = useState({})
 
   useEffect(() => {
     fetch("/api/struktur")
@@ -74,28 +72,11 @@ export default function Struktur() {
             </span>
           </div>
 
-          <div className="relative w-full h-20 hidden lg:block">
-            <div className="absolute left-1/2 top-0 h-16 w-1 -translate-x-1/2 bg-hijauhunter" />
-            <div className="absolute left-[10%] right-[10%] top-[80%] h-1 bg-hijauhunter" />
-            <div className="absolute left-[30%] top-[85%] h-8 w-1 bg-hijauhunter" />
-            <div className="absolute left-1/2 top-[85%] h-8 w-1 -translate-x-1/2 bg-hijauhunter" />
-            <div className="absolute left-[70%] top-[85%] h-8 w-1 bg-hijauhunter" />
-            <div className="absolute left-[90%] top-[80%] h-8 w-1 bg-hijauhunter" />
-            <div className="absolute left-[10%] top-[85%] h-8 w-1 bg-hijauhunter" />
-          </div>
 
-          <div className="relative w-full h-20 sm:hidden block">
-            <div className="absolute left-1/2 top-0 h-[112px] w-1 -translate-x-1/2 bg-hijauhunter" />
-            <div className="absolute left-1/2 top-[527%] h-[21px] w-1 -translate-x-1/2 bg-hijauhunter" />
-            <div className="absolute left-1/2 top-[939%] h-[21px] w-1 -translate-x-1/2 bg-hijauhunter" />
-            <div className="absolute left-1/2 top-[1352%] h-[21px] w-1 -translate-x-1/2 bg-hijauhunter" />
-            <div className="absolute left-1/2 top-[1764%] h-[21px] w-1 -translate-x-1/2 bg-hijauhunter" />
-          </div>
-
-          <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center gap-5 mt-8">
+          <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 justify-items-center gap-5 mt-8">
             <Pengurus
               foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308995/proximiti-2026/struktur/reval_satria.webp"
-              nama="Reval Satria"
+              nama="Ali Adriansyah"
               kelas="IT 49-01"
               jabatan="KM 01"
             />
@@ -122,6 +103,12 @@ export default function Struktur() {
               nama="Josjis"
               kelas="IT 49-01"
               jabatan="KM 05"
+            />
+             <Pengurus
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
+              nama="Josjis"
+              kelas="IT 49-01"
+              jabatan="KM 06"
             />
           </div>
         </section>
