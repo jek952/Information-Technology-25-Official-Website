@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase-admin";
-import { verifyAdminSession } from "@/app/lib/auth";
+import { verifyAdminSession, clearAuthCookie } from "@/app/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
     const session = await verifyAdminSession(req);
     if (!session.authenticated) {
-      return NextResponse.json(
+      const res = NextResponse.json(
         { success: false, error: session.error || "Akses ditolak: Autentikasi admin diperlukan." },
         { status: 401 }
       );
+      clearAuthCookie(res);
+      return res;
     }
 
     const { searchParams } = new URL(req.url);

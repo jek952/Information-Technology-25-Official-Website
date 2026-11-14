@@ -47,6 +47,12 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname === "/login") {
+    if (req.nextUrl.searchParams.has("from")) {
+      const response = NextResponse.next();
+      response.cookies.delete(COOKIE_NAME);
+      response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
+      return response;
+    }
     if (isValidSession) {
       const response = NextResponse.redirect(new URL("/admin", req.url));
       response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");

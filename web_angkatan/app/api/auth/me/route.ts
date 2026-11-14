@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyAdminSession } from "@/app/lib/auth";
+import { verifyAdminSession, clearAuthCookie } from "@/app/lib/auth";
 
 export async function GET(req: NextRequest) {
   const session = await verifyAdminSession(req);
   if (!session.authenticated || !session.admin) {
-    return NextResponse.json({ authenticated: false }, { status: 401 });
+    const res = NextResponse.json({ authenticated: false }, { status: 401 });
+    clearAuthCookie(res);
+    return res;
   }
 
   return NextResponse.json({
