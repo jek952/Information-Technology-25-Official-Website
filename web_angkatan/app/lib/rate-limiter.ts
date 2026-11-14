@@ -8,10 +8,6 @@ export interface RateLimitResult {
 
 let lastCleanupTime = 0;
 
-/**
- * Pembersihan berkala otomatis (self-pruning) untuk menghapus dokumen kedaluwarsa
- * tanpa perlu dependensi cron eksternal. Berjalan non-blocking maksimal sekali per 10 menit.
- */
 async function pruneExpiredRateLimits(): Promise<void> {
   const now = Date.now();
   if (now - lastCleanupTime < 10 * 60 * 1000) return;
@@ -34,12 +30,9 @@ async function pruneExpiredRateLimits(): Promise<void> {
   }
 }
 
-/**
- * Atomic shared rate limiter across serverless instances using Firestore Transactions.
- */
 export async function checkSharedRateLimit(
-  action: string, // e.g. "upload", "login", "logout"
-  identifier: string, // client IP
+  action: string,
+  identifier: string,
   limit: number,
   windowMs: number
 ): Promise<RateLimitResult> {
@@ -47,7 +40,6 @@ export async function checkSharedRateLimit(
   const ref = db.collection("rate_limits").doc(safeId);
   const now = Date.now();
 
-  // Jalankan pruning non-blocking di background
   pruneExpiredRateLimits().catch(() => {});
 
   try {
@@ -61,7 +53,6 @@ export async function checkSharedRateLimit(
           identifier,
           count: 1,
           expiry: now + windowMs,
-          // Field expire_at bertipe Date native Firestore untuk mendukung Firestore Native TTL Policy
           expire_at: new Date(now + windowMs),
           updated_at: new Date().toISOString(),
         });
@@ -81,7 +72,6 @@ export async function checkSharedRateLimit(
     });
   } catch (error) {
     console.error(`[RATE LIMIT ERROR on ${action}]:`, error);
-    // Fail-Closed: Jika database rate limit mengalami error/stall, tolak request demi keamanan
     return { allowed: false, remaining: 0, resetInMinutes: 1 };
   }
 }

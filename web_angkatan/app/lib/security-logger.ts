@@ -17,9 +17,7 @@ export interface SecurityLogPayload {
   metadata?: Record<string, any>;
 }
 
-// Window throttle 5 menit per (tipe event + IP) untuk melindungi kuota penulisan Firestore
 const THROTTLE_WINDOW_MS = 5 * 60 * 1000;
-// In-memory hot shield untuk memblokir flooding tanpa menyentuh Firestore sama sekali pada instance yang aktif
 const inMemoryFloodShield = new Map<string, number>();
 
 export async function logSecurityEvent(payload: SecurityLogPayload): Promise<void> {
@@ -28,15 +26,12 @@ export async function logSecurityEvent(payload: SecurityLogPayload): Promise<voi
     const throttleKey = `${payload.type}_${safeIp}`;
     const now = Date.now();
 
-    // 1. Hot Shield: Jika event & IP sama berulang dalam rentang 15 detik pada instance yang sama,
-    // drop eksekusi seketika tanpa Firestore read maupun write (0 cost).
     const lastSeenMemory = inMemoryFloodShield.get(throttleKey);
     if (lastSeenMemory && (now - lastSeenMemory) < 15_000) {
       return;
     }
     inMemoryFloodShield.set(throttleKey, now);
 
-    // Garbage collection ringan untuk inMemoryFloodShield
     if (inMemoryFloodShield.size > 2000) {
       for (const [k, v] of inMemoryFloodShield.entries()) {
         if (now - v > 60_000) inMemoryFloodShield.delete(k);
@@ -48,8 +43,6 @@ export async function logSecurityEvent(payload: SecurityLogPayload): Promise<voi
     if (throttleSnap.exists) {
       const data = throttleSnap.data();
       if (data && typeof data.expiry === "number" && data.expiry > now) {
-        // Serangan berulang dalam window 5 menit: Update counter di throttle doc, jangan tambah doc baru di security_logs.
-        // Batasi frekuensi update Firestore doc agar tidak write-exhaustion.
         const lastAttemptMs = data.last_attempt_ms || 0;
         if (now - lastAttemptMs > 30_000) {
           await throttleRef.update({
@@ -62,7 +55,6 @@ export async function logSecurityEvent(payload: SecurityLogPayload): Promise<voi
       }
     }
 
-    // Buat atau perbarui batas throttle
     await throttleRef.set({
       type: payload.type,
       ip: payload.ip,
@@ -72,13 +64,11 @@ export async function logSecurityEvent(payload: SecurityLogPayload): Promise<voi
       last_attempt: new Date().toISOString(),
     });
 
-    // Tulis dokumen log persisten
     await db.collection("security_logs").add({
       ...payload,
       created_at: new Date().toISOString(),
     });
   } catch (err) {
-    // Non-blocking: pencatatan log tidak boleh mengganggu respons utama
     console.error("[SECURITY LOG ERROR]", err);
   }
 }

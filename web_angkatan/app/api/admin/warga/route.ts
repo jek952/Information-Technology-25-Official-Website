@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
     const snapshot = await query.get();
     const data = snapshot.docs.map((doc) => {
       const docData = doc.data();
-      // Buang metadata internal seperti drive_id
       const { drive_id, ...cleanData } = docData;
       return {
         id: doc.id,

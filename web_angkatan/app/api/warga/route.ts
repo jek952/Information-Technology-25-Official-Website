@@ -80,7 +80,6 @@ export async function GET(req: NextRequest) {
     const kelas = searchParams.get("kelas");
     const role = searchParams.get("role");
 
-    // Validasi parameter dengan whitelist ketat untuk mencegah cache flooding
     if (kelas && !ALLOWED_KELAS.has(kelas)) {
       return NextResponse.json(
         { success: false, error: "Parameter kelas tidak valid." },
@@ -111,8 +110,6 @@ export async function GET(req: NextRequest) {
 
     const snapshot = await query.get();
 
-    // Proyeksi publik ketat: HANYA field yang dibutuhkan oleh UI publik
-    // Otomatis menyingkirkan: email, drive_id, created_at, updated_at
     const data = snapshot.docs.map((doc) => {
       const d = doc.data();
       return {

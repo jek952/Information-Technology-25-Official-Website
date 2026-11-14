@@ -14,7 +14,7 @@ import { getClientIp } from "@/app/lib/ip";
 import { checkSharedRateLimit } from "@/app/lib/rate-limiter";
 
 const MAX_LOGIN_ATTEMPTS = 5;
-const LOGIN_LOCKOUT_MS = 15 * 60 * 1000; // 15 menit
+const LOGIN_LOCKOUT_MS = 15 * 60 * 1000;
 
 const DUMMY_HASH = "$2a$12$e80yq7Kj4UoM3gK1zDq2p.Gz3KjYw9Xy0YQ1mU7A1b8y4T0c3N8Gq";
 
@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
     const { username, password } = parsed.data;
     const cleanUsername = username.trim().toLowerCase();
 
-    // Rate limiting berbasis kombinasi IP + Username untuk mencegah DoS pada jaringan bersama (Wi-Fi kampus)
     const rateAction = `login_${cleanUsername}`;
     const rateCheck = await checkSharedRateLimit(rateAction, ip, MAX_LOGIN_ATTEMPTS, LOGIN_LOCKOUT_MS);
     if (!rateCheck.allowed) {
@@ -93,7 +92,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Reset rate limit pada login sukses
     const cleanRateDocId = `${rateAction}_${ip}`.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 120);
     await db.collection("rate_limits").doc(cleanRateDocId).delete().catch(() => {});
 
