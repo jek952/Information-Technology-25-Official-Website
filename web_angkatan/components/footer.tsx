@@ -44,7 +44,7 @@ export default function Footer() {
     { label: "IT-49-03", id: "3" },
     { label: "IT-49-04", id: "4" },
     { label: "IT-49-05", id: "5" },
-    { label: "IT-49-06", id: "6" },
+    { label: "IT-49-INT", id: "6" },
   ];
 
   return (

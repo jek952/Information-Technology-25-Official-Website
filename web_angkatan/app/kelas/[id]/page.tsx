@@ -15,7 +15,7 @@ const Listkelas = () => {
   const router = useRouter();
   const paras = useParams<{ id: string }>();
   const id = Number(paras?.id || "1");
-  const kelasON = `IT-49-${String(id).padStart(2, "0")}`;
+  const kelasON = id === 6 ? "IT-49-INT" : `IT-49-${String(id).padStart(2, "0")}`;
 
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
