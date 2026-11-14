@@ -64,6 +64,9 @@ function invalidateWargaCache(): void {
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await verifyAdminSession(req);
+    const isAdmin = session.authenticated;
+
     const { searchParams } = new URL(req.url);
     const kelas = searchParams.get("kelas");
     const role = searchParams.get("role");
@@ -72,7 +75,8 @@ export async function GET(req: NextRequest) {
     const cached = cacheStore.get(cacheKey);
     const now = Date.now();
 
-    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+    // Cache publik hanya untuk pengunjung non-admin
+    if (!isAdmin && cached && now - cached.timestamp < CACHE_TTL_MS) {
       const response = NextResponse.json({ success: true, data: cached.data });
       response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
       return response;
@@ -90,18 +94,35 @@ export async function GET(req: NextRequest) {
     const snapshot = await query.get();
     const data = snapshot.docs.map((doc) => {
       const docData = doc.data();
-      // Buang metadata internal seperti drive_id dari payload publik
+      // Buang metadata internal seperti drive_id
       const { drive_id, ...cleanData } = docData;
+
+      if (!isAdmin) {
+        // Publik: lindungi data pribadi dengan membuang email
+        const { email, ...publicData } = cleanData;
+        return {
+          id: doc.id,
+          ...publicData,
+        };
+      }
+
+      // Admin yang terotentikasi tetap dapat mengelola data email
       return {
         id: doc.id,
         ...cleanData,
       };
     });
 
-    cacheStore.set(cacheKey, { data, timestamp: now });
+    if (!isAdmin) {
+      cacheStore.set(cacheKey, { data, timestamp: now });
+    }
 
     const response = NextResponse.json({ success: true, data });
-    response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    if (!isAdmin) {
+      response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    } else {
+      response.headers.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
+    }
     return response;
   } catch (error) {
     console.error("GET warga error:", error);
