@@ -107,8 +107,8 @@ export default function Struktur() {
              <Pengurus
               foto= "https://i.ibb.co.com/mCMyHxRV/user-dummy.jpg"
               nama="example"
-              kelas="IT 49-06"
-              jabatan="KM 06"
+              kelas="IT 49-INT"
+              jabatan="KM INT"
             />
           </div>
         </section>
