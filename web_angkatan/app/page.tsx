@@ -288,7 +288,7 @@ export default function Home() {
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     />
 
-                    {/* Dark Glass Hover Overlay */}
+    
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-3.5">
                       <div className="flex justify-end">
                         <span className="w-7 h-7 rounded-full bg-white/20 text-white flex items-center justify-center text-xs backdrop-blur-xs">
