@@ -79,7 +79,7 @@ export default function AdminInfo() {
     setStatsLoading(true);
     try {
       const [wargaRes, infoRes, galeriRes] = await Promise.all([
-        fetch("/api/warga").then((r) => r.json()),
+        fetch("/api/admin/warga").then((r) => r.json()),
         fetch("/api/information").then((r) => r.json()),
         fetch("/api/galeri").then((r) => r.json()),
       ]);
@@ -646,7 +646,7 @@ export default function AdminInfo() {
   const fetchAllWarga = async () => {
     setWargaLoading(true);
     try {
-      const res = await fetch("/api/warga");
+      const res = await fetch("/api/admin/warga");
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setWargaList(json.data);

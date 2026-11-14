@@ -54,6 +54,18 @@ const WargaSchema = z.object({
 const cacheStore = new Map<string, { data: any[]; timestamp: number }>();
 const CACHE_TTL_MS = 60 * 1000;
 
+const ALLOWED_KELAS = new Set([
+  "IT-49-01",
+  "IT-49-02",
+  "IT-49-03",
+  "IT-49-04",
+  "IT-49-05",
+  "IT-49-INT",
+]);
+
+const ALLOWED_ROLES = new Set(["anggota", "ketua_kelas", "waldos"]);
+const PUBLIC_CACHE_HEADER = "public, s-maxage=60, stale-while-revalidate=120";
+
 function getCacheKey(kelas: string | null, role: string | null): string {
   return `${kelas || "all"}_${role || "all"}`;
 }
@@ -64,65 +76,63 @@ function invalidateWargaCache(): void {
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await verifyAdminSession(req);
-    const isAdmin = session.authenticated;
-
     const { searchParams } = new URL(req.url);
     const kelas = searchParams.get("kelas");
     const role = searchParams.get("role");
+
+    // Validasi parameter dengan whitelist ketat untuk mencegah cache flooding
+    if (kelas && !ALLOWED_KELAS.has(kelas)) {
+      return NextResponse.json(
+        { success: false, error: "Parameter kelas tidak valid." },
+        { status: 400 }
+      );
+    }
+
+    if (role && !ALLOWED_ROLES.has(role)) {
+      return NextResponse.json(
+        { success: false, error: "Parameter role tidak valid." },
+        { status: 400 }
+      );
+    }
 
     const cacheKey = getCacheKey(kelas, role);
     const cached = cacheStore.get(cacheKey);
     const now = Date.now();
 
-    // Cache publik hanya untuk pengunjung non-admin
-    if (!isAdmin && cached && now - cached.timestamp < CACHE_TTL_MS) {
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
       const response = NextResponse.json({ success: true, data: cached.data });
-      response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+      response.headers.set("Cache-Control", PUBLIC_CACHE_HEADER);
       return response;
     }
 
     let query: FirebaseFirestore.Query = db.collection("warga");
-
-    if (kelas) {
-      query = query.where("kelas", "==", kelas);
-    }
-    if (role) {
-      query = query.where("role", "==", role);
-    }
+    if (kelas) query = query.where("kelas", "==", kelas);
+    if (role) query = query.where("role", "==", role);
 
     const snapshot = await query.get();
+
+    // Proyeksi publik ketat: HANYA field yang dibutuhkan oleh UI publik
+    // Otomatis menyingkirkan: email, drive_id, created_at, updated_at
     const data = snapshot.docs.map((doc) => {
-      const docData = doc.data();
-      // Buang metadata internal seperti drive_id
-      const { drive_id, ...cleanData } = docData;
-
-      if (!isAdmin) {
-        // Publik: lindungi data pribadi dengan membuang email
-        const { email, ...publicData } = cleanData;
-        return {
-          id: doc.id,
-          ...publicData,
-        };
-      }
-
-      // Admin yang terotentikasi tetap dapat mengelola data email
+      const d = doc.data();
       return {
         id: doc.id,
-        ...cleanData,
+        nama: d.nama,
+        nama_lengkap: d.nama_lengkap,
+        nama_panggilan: d.nama_panggilan,
+        kelas: d.kelas,
+        role: d.role,
+        foto: d.foto,
+        instagram: d.instagram,
+        linkedin: d.linkedin,
+        github: d.github,
       };
     });
 
-    if (!isAdmin) {
-      cacheStore.set(cacheKey, { data, timestamp: now });
-    }
+    cacheStore.set(cacheKey, { data, timestamp: now });
 
     const response = NextResponse.json({ success: true, data });
-    if (!isAdmin) {
-      response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
-    } else {
-      response.headers.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
-    }
+    response.headers.set("Cache-Control", PUBLIC_CACHE_HEADER);
     return response;
   } catch (error) {
     console.error("GET warga error:", error);
