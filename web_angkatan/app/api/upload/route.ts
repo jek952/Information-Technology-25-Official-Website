@@ -45,11 +45,11 @@ export async function POST(req: NextRequest) {
     }
 
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      console.error("Upload error: Cloudinary credentials missing in .env.local");
+      console.error("Upload error: Cloudinary credentials missing in environment variables.");
       return NextResponse.json(
         {
           success: false,
-          error: "Konfigurasi Cloudinary belum lengkap di .env.local (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET).",
+          error: "Layanan penyimpanan gambar sedang tidak tersedia. Silakan hubungi administrator.",
         },
         { status: 500 }
       );

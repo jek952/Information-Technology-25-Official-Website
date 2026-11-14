@@ -22,23 +22,6 @@ export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req);
 
-    // Cek status rate limit login shared
-    const rateCheck = await checkSharedRateLimit("login_attempt", ip, MAX_LOGIN_ATTEMPTS, LOGIN_LOCKOUT_MS);
-    if (!rateCheck.allowed) {
-      logSecurityEvent({
-        type: "LOGIN_LOCKOUT",
-        ip,
-        detail: `IP diblokir sementara karena melebihi ${MAX_LOGIN_ATTEMPTS} kali percobaan login gagal`,
-      });
-      return NextResponse.json(
-        {
-          success: false,
-          error: `Terlalu banyak percobaan gagal. Akses diblokir sementara selama ${rateCheck.resetInMinutes} menit.`,
-        },
-        { status: 429 }
-      );
-    }
-
     const body = await req.json();
     if (JSON.stringify(body).length > 2000) {
       return NextResponse.json(
@@ -56,6 +39,24 @@ export async function POST(req: NextRequest) {
 
     const { username, password } = parsed.data;
     const cleanUsername = username.trim().toLowerCase();
+
+    // Rate limiting berbasis kombinasi IP + Username untuk mencegah DoS pada jaringan bersama (Wi-Fi kampus)
+    const rateAction = `login_${cleanUsername}`;
+    const rateCheck = await checkSharedRateLimit(rateAction, ip, MAX_LOGIN_ATTEMPTS, LOGIN_LOCKOUT_MS);
+    if (!rateCheck.allowed) {
+      logSecurityEvent({
+        type: "LOGIN_LOCKOUT",
+        ip,
+        detail: `Percobaan login untuk user '${cleanUsername}' diblokir sementara karena melebihi ${MAX_LOGIN_ATTEMPTS} kali kegagalan`,
+      });
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Terlalu banyak percobaan gagal untuk akun ini. Akses diblokir sementara selama ${rateCheck.resetInMinutes} menit.`,
+        },
+        { status: 429 }
+      );
+    }
 
     const snapshot = await db
       .collection("admins")
@@ -93,8 +94,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Reset rate limit pada login sukses
-    const cleanIpDocId = `login_attempt_${ip.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
-    await db.collection("rate_limits").doc(cleanIpDocId).delete().catch(() => {});
+    const cleanRateDocId = `${rateAction}_${ip}`.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 120);
+    await db.collection("rate_limits").doc(cleanRateDocId).delete().catch(() => {});
 
     await adminDoc.ref.update({
       last_login: new Date().toISOString(),
