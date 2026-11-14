@@ -44,8 +44,8 @@ export default function Struktur() {
 
             <img
               src={ketua.foto}
-              alt=""
-              className="w-auto md:h-[400px] z-10 rounded-2xl  border-2 object-cover"
+              alt="ketua"
+              className="w-auto md:h-100 z-10 rounded-2xl  border-2 object-cover"
             />
 
             <span className="space-y-2">
@@ -75,39 +75,39 @@ export default function Struktur() {
 
           <div className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 justify-items-center gap-5 mt-8">
             <Pengurus
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308995/proximiti-2026/struktur/reval_satria.webp"
-              nama="Ali Adriansyah"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1793785262/proximiti-2026/warga/nht013vydewzkukr0jmm.webp"
+              nama="Ali Andriansyah"
               kelas="IT 49-01"
               jabatan="KM 01"
             />
             <Pengurus
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308997/proximiti-2026/struktur/ariiq_m.webp"
-              nama="Ariiq M"
-              kelas="IT 49-01"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1794619425/proximiti-2026/warga/i9xxwzsoedj67gmfb3kr.webp"
+              nama="Hansbert Saalino"
+              kelas="IT 49-02"
               jabatan="KM 02"
             />
             <Pengurus
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
-              nama="Zhafran Ujep"
-              kelas="IT 49-01"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1792899516/proximiti-2026/warga/pa5tw9sne1ngfukwgamh.webp"
+              nama="Baihaqy Al Buzjani"
+              kelas="IT 49-03"
               jabatan="KM 03"
             />
             <Pengurus
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
-              nama="Dimas Dirda"
-              kelas="IT 49-01"
+              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1792551569/proximiti-2026/warga/warga_mbaguss236.webp"
+              nama="Muhammad Bagus Prabowo"
+              kelas="IT 49-04"
               jabatan="KM 04"
             />
             <Pengurus
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
-              nama="Josjis"
-              kelas="IT 49-01"
+              foto = "https://res.cloudinary.com/hvnrszvj/image/upload/v1794624828/proximiti-2026/warga/v5bcvnuvau2msde9ijyj.webp"
+              nama="Muhamad Wildan Assafari "
+              kelas="IT 49-05"
               jabatan="KM 05"
             />
              <Pengurus
-              foto="https://res.cloudinary.com/hvnrszvj/image/upload/v1791308998/proximiti-2026/struktur/pengurus_inti.webp"
-              nama="Josjis"
-              kelas="IT 49-01"
+              foto= "https://i.ibb.co.com/mCMyHxRV/user-dummy.jpg"
+              nama="example"
+              kelas="IT 49-06"
               jabatan="KM 06"
             />
           </div>

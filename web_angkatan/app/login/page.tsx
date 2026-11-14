@@ -65,7 +65,7 @@ function LoginForm() {
       <div className="bg-white border border-gray-200/80 rounded-2xl p-8 sm:p-9 shadow-xl shadow-gray-200/50">
         <div className="flex flex-col items-center text-center mb-7">
           <img
-            src="/logo-proximiti.png"
+            src="/logo-akt.png"
             alt="Logo IT 25"
             className="w-16 h-16 md:w-20 md:h-20 object-contain mb-3 drop-shadow-sm"
           />

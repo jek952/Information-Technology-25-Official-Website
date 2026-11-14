@@ -101,13 +101,13 @@ export default function Home() {
               className="w-36 h-36 transition-all duration-500 ease-in-out hover:scale-110"
             />
           </div>
-          <span className="min-h-62.5 block w-full pt-4 text-center">
+          <span className="block min-h-[370px] w-full max-w-3xl pt-8 text-center">
             {isLogo ? (
               <div>
                 <h1 className="font-semibold text-4xl pb-5 md:text-5xl">
                   Concordia Fratrum, Lux in Futuri
                 </h1>
-                <p className="text-base sm:text-md">
+                <p className="text-bas leading-8 sm:text-md">
                   Menjadi prinsip bahwa persaudaraan dan persatuan adalah
                   fondasi untuk membangun masa depan bersama. Velkarys bukan
                   sekadar nama atau lambang sebuah angkatan, melainkan
@@ -121,7 +121,7 @@ export default function Home() {
                 <h1 className="font-semibold text-4xl pb-5 md:text-5xl">
                   Makna Logo Angkatan
                 </h1>
-                <p className="text-base sm:text-md">
+                <p className="text-base leading-8 sm:text-md">
                   Naga melambangkan kekuatan, keberanian, dan semangat Angkatan
                   25 untuk terus melangkah menghadapi berbagai rintangan. Sayap
                   naga yang membentang menggambarkan persatuan seluruh anggota
@@ -164,27 +164,48 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="flex relative text-jeruk mb-10 justify-center items-center min-h-screen gap-20 mx-auto w-full">
-          <div className="absolute inset-0 bg-[url('/BG-IT.jpeg')] bg-cover bg-center bg-blend-multiply bg-black/70" />
-          <div className="z-10 flex md:flex-row flex-col justify-center md:justify-between items-center gap-10 w-11/12">
+        <section className="relative grid text-white min-h-screen w-full grid-cols-1 overflow-hidden bg-hijaugelap  md:grid-cols-2">
+          <div className="relative min-h-[400px] md:min-h-screen">
+            <div className="absolute inset-0 bg-[url('/BG-IT.jpeg')] bg-cover bg-center" />
+            <div className="absolute inset-0 bg-black/70" />
+          </div>
+
+          <div className="flex flex-col text-gray-300 justify-center px-8 py-16 md:px-12 lg:px-16 xl:px-20">
             {" "}
-            <span className="md:w-1/2 text-center">
-              <h1 className="font-semibold text-4xl pb-5 md:text-5xl">VISI</h1>
-              <p>
+            <span className="mb-4 ">
+              <h1 className=" text-4xl font-bold md:text-5xl lg:text-6xl">
+                VISI
+              </h1>
+              <p className="mt-6 max-w-xl text-sm leading-8  md:text-base">
                 Membangun angkatan 25 Teknologi Informasi yang kompak,
                 komunikatif, dan saling membantu, serta tumbuh bersama selama
                 menjalani perjalanan di Prodi Teknologi Informasi, juga menjadi
                 jembatan komunikasi dan informasi antar angkatan.
               </p>
             </span>
-            <span className="md:w-1/2 text-center">
-              <h1 className="font-semibold text-4xl pb-5 md:text-5xl">MISI</h1>
-              <p className="whitespace-pre-line">
-                {`1. Komunikasi terbuka dan aktif Informasi jelas dan jalur aspirasi yang mudah diakses.
-                2. Budaya saling membantu Forum belajar bersama dan berbagi materi antar teman seangkatan.
-                3. Kekompakan lintas kelas Kegiatan kebersamaan yang melibatkan seluruh kelas angkatan.
-                4. Penghubung yang responsif Menyambungkan angkatan secara transparan.`}
-              </p>
+            <div className="my-10 h-px w-full max-w-xl bg-white/10" />
+            <span>
+              <h1 className=" text-4xl font-bold md:text-5xl lg:text-6xl">
+                MISI
+              </h1>
+              <ul className="mt-6 max-w-xl space-y-4 text-sm leading-7  md:text-base">
+                <li>
+                  01. Komunikasi terbuka dan aktif Informasi jelas dan jalur
+                  aspirasi yang mudah diakses.
+                </li>
+                <li>
+                  02. Budaya saling membantu Forum belajar bersama dan berbagi
+                  materi antar teman seangkatan.
+                </li>
+                <li>
+                  03. Kekompakan lintas kelas Kegiatan kebersamaan yang
+                  melibatkan seluruh kelas angkatan.
+                </li>
+                <li>
+                  04. Penghubung yang responsif Menyambungkan angkatan secara
+                  transparan.
+                </li>
+              </ul>
             </span>
           </div>
         </section>
@@ -304,6 +325,59 @@ export default function Home() {
           </Link>
         </section>
 
+        <section className="relative overflow-hidden bg-hijaugelap px-4 py-10 text-white md:px-8">
+          <div className="pointer-events-none absolute -right-32 top-20 h-80 w-80 rounded-full bg-hijauterangbanget/30 blur-[100px]" />
+          <div className="pointer-events-none absolute -left-32 bottom-0 h-80 w-80 rounded-full bg-jeruk/10 blur-[100px]" />
+
+          <div className="relative mx-auto max-w-6xl">
+            <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <div>
+                <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+                  Hall of Fame<span className="text-hijaugelap">.</span>
+                </h1>
+
+                <p className="mt-4 max-w-md text-sm leading-7 text-gray-400 md:text-base">
+                  Inilah beberapa hasil prestasi mahasiswa angkatan kami.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {hallOfFameList.map((isian: any, idx: number) => (
+                <div
+                  key={`${isian.id}-${idx}`}
+                  className={`group relative overflow-hidden rounded-2xl transition-all duration-500 hover:-translate-y-1 hover:border-[#EB5E28]/50 ${
+                    idx === 0 ? "md:col-span-2 lg:col-span-2" : ""
+                  }`}
+                >
+                  <div
+                    className={`relative overflow-hidden ${"h-[300px] md:h-[400px]"}`}
+                  >
+                    <img
+                      src={isian.foto}
+                      alt={isian.nama}
+                      className="h-full w-full object-cover brightness-75 transition-all duration-700 group-hover:scale-110 "
+                    />
+
+                    <div className="absolute inset-0 " />
+                    <div className="absolute bottom-0 left-0 w-full p-5 md:p-6">
+                      <span className="mb-3 inline-block rounded-md bg-hijauhunter px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white">
+                        {isian.penghargaan}
+                      </span>
+
+                      <h2
+                        className={`font-bold leading-tight text-white transition-colors duration-300 ${"text-2xl md:text-3xl"}`}
+                      >
+                        {isian.nama}
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* === INFORMATION HUB PREVIEW === */}
         <section className="max-w-[1400px] mx-auto flex justify-center items-center flex-col gap-6 py-16">
           <span className="text-center">
@@ -315,7 +389,6 @@ export default function Home() {
             </p>
           </span>
 
-          {/* Grid: 3 kolom desktop, 1 kolom mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
             {infoList.map((item, idx) => (
               <a
@@ -355,107 +428,6 @@ export default function Home() {
             Info Lainnya
             <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
           </Link>
-        </section>
-
-        <section className="flex flex-col pt-16  px-3 md:px-0 gap-5 min-h-175">
-          <span className="text-center">
-            <h1 className="font-semibold text-4xl pb-5 md:text-5xl">
-              Hall Of Fame
-            </h1>
-            <p>Inilah beberapa hasil prestasi mahasiswa angkatan kami</p>
-          </span>
-          <div className="w-full max-w-6xl mx-auto">
-            <Swiper
-              key={`hof-${loopedHallOfFame.length}`}
-              onSwiper={setSwiperInstance}
-              onSlideChange={(swiper) => {
-                if (hallOfFameList.length > 0) {
-                  setHallOfFameActiveIndex(
-                    swiper.realIndex % hallOfFameList.length,
-                  );
-                }
-              }}
-              effect="coverflow"
-              grabCursor={true}
-              centeredSlides={true}
-              slidesPerView={1}
-              spaceBetween={20}
-              loop={true}
-              speed={800}
-              breakpoints={{
-                640: {
-                  slidesPerView: 1,
-                },
-                768: {
-                  slidesPerView: 2,
-                },
-                1024: {
-                  slidesPerView: 3,
-                },
-              }}
-              coverflowEffect={{
-                rotate: 0,
-                stretch: 80,
-                depth: 200,
-                modifier: 1,
-                slideShadows: false,
-              }}
-              autoplay={{
-                delay: 3200,
-                disableOnInteraction: false,
-              }}
-              modules={[EffectCoverflow, Navigation, Autoplay]}
-              className="w-full"
-            >
-              {loopedHallOfFame.map((isian: any, idx: number) => (
-                <SwiperSlide key={`${isian.id}-${idx}`}>
-                  <div
-                    style={{ backgroundImage: `url(${isian.foto})` }}
-                    className="relative rounded-xl w-auto md:w-125 bg-blend-multiply bg-black/50 text-white flex flex-col items-start justify-end p-4 h-[300px] bg-center bg-cover"
-                  >
-                    <h2 className="text-xl md:text-2xl font-bold">
-                      {isian.nama}
-                    </h2>
-                    <h1 className="text-base md:text-lg font-semibold">
-                      {isian.penghargaan}
-                    </h1>
-                    <p className="text-sm mt-2">{isian.deskripsi}</p>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-
-            {/* Indicator dots yang presisi sesuai jumlah asli data */}
-            {hallOfFameList.length > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-6">
-                {hallOfFameList.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => {
-                      if (!swiperInstance) return;
-                      const currentMod =
-                        swiperInstance.realIndex % hallOfFameList.length;
-                      let diff = i - currentMod;
-                      // cari rute rotasi terdekat (maju atau mundur)
-                      if (diff > hallOfFameList.length / 2) {
-                        diff -= hallOfFameList.length;
-                      } else if (diff < -hallOfFameList.length / 2) {
-                        diff += hallOfFameList.length;
-                      }
-                      swiperInstance.slideTo(swiperInstance.activeIndex + diff);
-                    }}
-                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      hallOfFameActiveIndex === i
-                        ? "w-8 bg-hijauterang"
-                        : "w-2.5 bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={`Slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
         </section>
       </main>
 
