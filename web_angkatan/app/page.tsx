@@ -166,8 +166,8 @@ export default function Home() {
 
         <section className="relative grid text-white min-h-screen w-full grid-cols-1 overflow-hidden bg-hijaugelap  md:grid-cols-2">
           <div className="relative min-h-[400px] md:min-h-screen">
-            <div className="absolute inset-0 bg-[url('/BG-IT.jpeg')] bg-cover bg-center" />
-            <div className="absolute inset-0 bg-black/70" />
+            <div className="absolute inset-0 bg-[url('/foto-akt.jpeg')] bg-cover bg-center" />
+            <div className="absolute inset-0 bg-black/30" />
           </div>
 
           <div className="flex flex-col text-gray-300 justify-center px-8 py-16 md:px-12 lg:px-16 xl:px-20">
